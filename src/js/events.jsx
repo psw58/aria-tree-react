@@ -5,8 +5,6 @@ var nodes = [
 ];
 
 
-
-
 export class TreeView extends Component {
 	constructor(props) {
 		super(props);
