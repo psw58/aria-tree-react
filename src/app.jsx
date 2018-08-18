@@ -1,16 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {MyButton} from './js/events';
-
-import { MyComponent } from './js/service';
+import {TreeView} from './js/events';
 
 //styles
 import './css/_cwd_events.scss';
 
 
 ReactDOM.render(
-  <MyButton />,
+  <TreeView />,
     document.getElementById('root')  
 );
 
