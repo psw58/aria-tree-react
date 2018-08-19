@@ -3,8 +3,13 @@ import ReactDOM from 'react';
 //import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 var nodes = [
-	{id:0, name:'root', type:'root', parent:'', isParent:true, expanded:false, focus:false, children:[1,2,3,4,5], tabIndex:0 },
-	{id:1, name:'', type:'child', parent:0, isParent:false, focus:false, tabIndex:-1 }
+	{id:0, name:'root', type:'root', parent:'', isParent:true, expanded:false, focus:false, groups:[1,2,3,7,8], tabIndex:0 },
+	{id:1, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
+	{id:2, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
+	{id:3, name:'', type:'', parent:'', isParent:true, expanded:false, focus:false, groups:[4,5,6], tabIndex:-1 },
+	{id:4, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
+	{id:5, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
+	{id:6, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
 ];
 
 
@@ -61,13 +66,30 @@ export class TreeView extends Component {
 					this.state.tid += 1;
 				}else{
 					//loop back to begining node
-					console.log("end of nodes looping to top'");
+					console.log("end of nodes looping to top");
 					this.state.tid = 0
 				}
 				//set focus to this element
 				this.refs[this.state.tid].focus()
 				this.state.nodes[this.state.tid].tabIndex = 0;
 				break;
+			case 'ArrowUp':
+				//remove focus from last element
+				this.state.nodes[this.state.tid].tabIndex = -1;
+				this.refs[this.state.tid].blur();
+				//update current target id
+				if (this.state.tid > 0){
+					this.state.tid -= 1;
+				}else{
+					//loop back to begining node
+					console.log("beggining of nodes looping to botttom");
+					this.state.tid = nodes.length-1
+				}
+				//set focus to this element
+				this.refs[this.state.tid].focus()
+				this.state.nodes[this.state.tid].tabIndex = 0;
+				break;				
+
 			default:
 				console.log(e.key);
 		}		
@@ -85,43 +107,64 @@ export class TreeView extends Component {
 					key={this.state.nodes[0].id}
 				  	aria-expanded={this.state.nodes[0].expanded} 
 					tabIndex={this.state.nodes[0].tabIndex}  
+					ref={this.state.nodes[0].id}
 					onClick={(e) => this.onClickEvent(e)}
 					onFocus={ (e) => this.onFocusEvent(e) }
 					onBlur={ (e) => this.onBlurEvent(e) }
 					onKeyDown={(e) => this.onKeyPressedEvent(e)}
-					ref={this.state.nodes[0].id}
 				>
 					<span 
-						className={this.state.nodes[0].focus ? 'focus' : '' } 
+						className={this.state.nodes[0].focus ? 'focus' : ''} 
 						id={'span'+this.state.nodes[0].id} 
 					>
 						Projects
 					</span>
 				<ul role="group">
 				  <li role="treeitem" 
-					  className="doc" 
-					  key = {this.state.nodes[1].id} 
 					  tabIndex={this.state.nodes[1].tabIndex}
-					  className={this.state.nodes[1].focus ? 'focus' : '' } 
+					  className={this.state.nodes[1].focus ? 'focus doc' : 'doc' } 
 					  ref={this.state.nodes[1].id}
 				>
 					project-1.docx
 				  </li>
-				  <li role="treeitem" className="doc" tabIndex="-1">
+				  <li role="treeitem" 
+					  tabIndex={this.state.nodes[2].tabIndex}
+					  className={this.state.nodes[2].focus ? 'focus doc' : 'doc' } 
+					  ref={this.state.nodes[2].id}
+				>
 					project-2.docx
 				  </li>
-				  <li role="treeitem" aria-expanded="false" tabIndex="-1">
-					<span>
+				  <li role="treeitem" 
+						aria-expanded={this.state.nodes[3].expanded} 
+						tabIndex={this.state.nodes[3].tabIndex}  
+						ref={this.state.nodes[3].id}
+				  >
+					<span
+						className={this.state.nodes[3].focus ? 'focus' : ''} 
+						id={'span'+this.state.nodes[3].id} 
+					>
 					  Project 3
 					</span>
 					<ul role="group">
-					  <li role="treeitem" className="doc" tabIndex="-1">
+					  <li role="treeitem" 
+						tabIndex={this.state.nodes[4].tabIndex}
+						className={this.state.nodes[4].focus ? 'focus doc' : 'doc' } 
+						ref={this.state.nodes[4].id}			  
+					  >
 						project-3A.docx
 					  </li>
-					  <li role="treeitem" className="doc" tabIndex="-1">
+					  <li role="treeitem" 
+						tabIndex={this.state.nodes[5].tabIndex}
+						className={this.state.nodes[5].focus ? 'focus doc' : 'doc' } 
+						ref={this.state.nodes[5].id}	
+						>
 						project-3B.docx
 					  </li>
-					  <li role="treeitem" className="doc" tabIndex="-1">
+					  <li role="treeitem" 
+						tabIndex={this.state.nodes[6].tabIndex}
+						className={this.state.nodes[6].focus ? 'focus doc' : 'doc' } 
+						ref={this.state.nodes[6].id}	
+					  >
 						project-3C.docx
 					  </li>
 					</ul>
