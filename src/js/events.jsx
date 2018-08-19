@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+//import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 var nodes = [
-	{type:'root', parent:'', isParent:true, expanded:false }
+	{id:0, type:'root', parent:'', isParent:true, expanded:false, focus:false }
 ];
 
 
@@ -16,32 +17,64 @@ export class TreeView extends Component {
 		console.log(this.state.nodes[0].type);
 	  }  
 
-	btnClickEvent( myId ){
-		console.log('You clicked me id='+myId);
+	btnClickEvent( event ){
+		event.preventDefault();
+		console.log(event.target);
+		console.log('You clicked me ');
 		console.log(this.state.nodes[0].expanded)
-		this.state.nodes[0].expanded = !this.state.nodes[0].expanded;
-		this.setState({nodes: nodes});
+		if (event.target.id == "span0"){
+			this.state.nodes[0].expanded = !this.state.nodes[0].expanded;
+			
+		}
+		
+		this.setState({nodes: this.state.nodes});
 
+	}
+
+	onFocus (e){
+		this.state.nodes[0].focus = true;
+		this.setState({nodes: this.state.nodes});
+	}
+
+	onBlur(e){
+		this.state.nodes[0].focus = false;
+		this.setState({nodes: this.state.nodes});
+	}
+
+	onKeyPressed(e){
+		switch(e.key) {
+			case 'Enter':
+			this.state.nodes[0].expanded = !this.state.nodes[0].expanded 
+				break;
+			default:
+			console.log(e.key);
+		}		
+		this.setState({nodes: this.state.nodes});
 	}
 
 	render() {
 		return (
-			/*
-			<button 
-				//need to research what is passed here?
-				onClick={(reactEvent) => this.btnClickEvent(reactEvent)}
-			>Click Me
-			</button>
-			*/
 			<div>
 			<h2 id="tree_label">
 			  Tree View
 			</h2>
 			<ul role="tree" aria-labelledby="tree_label">
-			  <li key={0} role="treeitem" aria-expanded={this.state.nodes[0].expanded} tabIndex="0" onClick={(reactEvent) => this.btnClickEvent(reactEvent)}>
-				<span>
-				  Projects
-				</span>
+			  <li role="treeitem"
+					key={"1"}
+				  	aria-expanded={this.state.nodes[0].expanded} 
+					tabIndex={this.state.nodes[0].id}  
+					onClick={(e) => this.btnClickEvent(e)}
+					onFocus={ (e) => this.onFocus(e) }
+					onBlur={ (e) => this.onBlur(e) }
+					onKeyDown={(e) => this.onKeyPressed(e)}
+				
+				>
+					<span 
+						className={this.state.nodes[0].focus ? 'focus' : '' } 
+						id={'span'+this.state.nodes[0].id} 
+					>
+						Projects
+					</span>
 				<ul role="group">
 				  <li role="treeitem" className="doc" tabIndex="-1">
 					project-1.docx

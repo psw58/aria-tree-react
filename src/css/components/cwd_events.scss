@@ -66,7 +66,12 @@ ul[role="tree"] {
 
 [role="treeitem"][aria-expanded="false"] > ul {
     display: none;
-}
+  }
+  
+  [role="treeitem"][aria-expanded="true"] > ul {
+    display: block;
+  }
+  
 
 [role="treeitem"][aria-expanded="false"] > span:before {
     content: url(https://www.w3.org/TR/wai-aria-practices-1.1/examples/treeview/treeview-1/images/closed.png);
@@ -83,7 +88,13 @@ ul[role="tree"] {
 }
 
 [role="treeitem"]:focus {
-    outline: 0;
+    /*outline: 0;*/
+}
+
+[role="treeitem"].focus,
+[role="treeitem"] span.focus {
+  border-color: black;
+  background-color: #EEEEEE;
 }
 
 [role="treeitem"] span:hover {
