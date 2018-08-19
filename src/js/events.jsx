@@ -7,9 +7,13 @@ var nodes = [
 	{id:1, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
 	{id:2, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
 	{id:3, name:'', type:'', parent:'', isParent:true, expanded:false, focus:false, groups:[4,5,6], tabIndex:-1 },
-	{id:4, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
-	{id:5, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
-	{id:6, name:'', type:'child', parent:0,  isParent:false, focus:false, tabIndex:-1 },
+	{id:4, name:'', type:'child', parent:3,  isParent:false, focus:false, tabIndex:-1 },
+	{id:5, name:'', type:'child', parent:3,  isParent:false, focus:false, tabIndex:-1 },
+	{id:6, name:'', type:'child', parent:3,  isParent:false, focus:false, tabIndex:-1 },
+	{id:7, name:'', type:'child', parent:3,  isParent:false, focus:false, tabIndex:-1 },
+	{id:8, name:'', type:'', parent:'', isParent:true, expanded:false, focus:false, groups:[9,10], tabIndex:-1 },
+	{id:9, name:'', type:'child', parent:9,  isParent:false, focus:false, tabIndex:-1 },
+	{id:10, name:'', type:'child', parent:10,  isParent:false, focus:false, tabIndex:-1 },	
 ];
 
 
@@ -26,12 +30,13 @@ export class TreeView extends Component {
 	  }  
 
 	onClickEvent( event ){
+		//@TODO if this element does not have focus give it focus
 		event.preventDefault();
 		console.log(event.target);
+		
 		//console.log(this.state.nodes[this.state.tid].expanded)
 		if (event.target.id == "span"+this.state.tid){
 			this.state.nodes[this.state.tid].expanded = !this.state.nodes[this.state.tid].expanded;
-			
 		}
 		
 		this.setState({nodes: this.state.nodes});
@@ -58,6 +63,7 @@ export class TreeView extends Component {
 				}
 				break;
 			case 'ArrowDown':
+				//@todo this should only move to child element if it is visable
 				//remove focus from last element
 				this.state.nodes[this.state.tid].tabIndex = -1;
 				this.refs[this.state.tid].blur()
@@ -74,6 +80,7 @@ export class TreeView extends Component {
 				this.state.nodes[this.state.tid].tabIndex = 0;
 				break;
 			case 'ArrowUp':
+				//@todo this should only move to child element if it is visable
 				//remove focus from last element
 				this.state.nodes[this.state.tid].tabIndex = -1;
 				this.refs[this.state.tid].blur();
@@ -169,31 +176,35 @@ export class TreeView extends Component {
 					  </li>
 					</ul>
 				  </li>
-				  <li role="treeitem" className="doc" tabIndex="-1">
+				  <li role="treeitem" 
+						tabIndex={this.state.nodes[7].tabIndex}
+						className={this.state.nodes[7].focus ? 'focus doc' : 'doc' } 
+						ref={this.state.nodes[7].id}	
+					  >
 					project-4.docx
 				  </li>
-				  <li role="treeitem" aria-expanded="false" tabIndex="-1">
+				  <li role="treeitem" 
+						aria-expanded={this.state.nodes[8].expanded} 
+						tabIndex={this.state.nodes[8].tabIndex}  
+						ref={this.state.nodes[8].id}
+				  >
 					<span>
 					  Project 5
 					</span>
 					<ul role="group">
-					  <li role="treeitem" className="doc" tabIndex="-1">
+					<li role="treeitem" 
+						tabIndex={this.state.nodes[9].tabIndex}
+						className={this.state.nodes[9].focus ? 'focus doc' : 'doc' } 
+						ref={this.state.nodes[9].id}	
+					  >
 						project-5A.docx
-					  </li>
-					  <li role="treeitem" className="doc" tabIndex="-1">
+					</li>
+					<li role="treeitem" 
+						tabIndex={this.state.nodes[10].tabIndex}
+						className={this.state.nodes[10].focus ? 'focus doc' : 'doc' } 
+						ref={this.state.nodes[10].id}	
+					  >
 						project-5B.docx
-					  </li>
-					  <li role="treeitem" className="doc">
-						project-5C.docx
-					  </li>
-					  <li role="treeitem" className="doc" tabIndex="-1">
-						project-5D.docx
-					  </li>
-					  <li role="treeitem" className="doc">
-						project-5E.docx
-					  </li>
-					  <li role="treeitem" className="doc" tabIndex="-1">
-						project-5F.docx
 					  </li>
 					</ul>
 				  </li>
