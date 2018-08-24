@@ -58,6 +58,8 @@ export class TreeView extends Component {
 
 	onBlurEvent(e){
 		this.state.nodes[this.state.tid].focus = false;
+		//return to this node @todo this needs testing
+		this.state.nodes[this.state.tid].tabIndex = 0;
 		this.setState({nodes: this.state.nodes});
 	}
 
@@ -85,6 +87,7 @@ export class TreeView extends Component {
 				//remove focus from last element
 				this.state.nodes[this.state.tid].tabIndex = -1;
 				this.refs[this.state.tid].blur()
+				//@TOD UPDATE THE TARGET ONLY IF ITS VISABLE
 				//update current target id
 				if (nodes.length > this.state.tid+1){
 					this.state.tid += 1;
@@ -106,6 +109,7 @@ export class TreeView extends Component {
 				this.state.nodes[this.state.tid].tabIndex = -1;
 				this.refs[this.state.tid].blur();
 				//update current target id
+				//@TOD0 UPDATE THE TARGET ONLY IF ITS VISABLE
 				if (this.state.tid > 0){
 					this.state.tid -= 1;
 				}else{
@@ -144,7 +148,14 @@ export class TreeView extends Component {
 			*/
 			case 'End':	
 				console.log('not implimented');
-				break;				
+				break;	
+			/* Type-ahead is recommended for all trees, especially for trees with more than 7 root nodes:
+				Type a character: 
+					focus moves to the next node with a name that starts with the typed character.
+				Type multiple characters in rapid succession: 
+					focus moves to the next node with a name that starts with the string of characters typed.
+				* (Optional): Expands all siblings that are at the same level as the current node.
+			*/			
 			default:
 				console.log(e.key);
 		}		
@@ -157,16 +168,18 @@ export class TreeView extends Component {
 			<h2 id="tree_label">
 			  Tree View
 			</h2>
-			<ul role="tree" aria-labelledby="tree_label">
-			  <li role="treeitem"
+			<ul role="tree" aria-labelledby="tree_label"
+				onClick={(e) => this.onClickEvent(e)}
+				onFocus={ (e) => this.onFocusEvent(e) }
+				onBlur={ (e) => this.onBlurEvent(e) }
+				onKeyDown={(e) => this.onKeyPressedEvent(e)}
+			>
+				{/* the root element */}
+			  	<li role="treeitem"
 					key={this.state.nodes[0].id}
 				  	aria-expanded={this.state.nodes[0].expanded} 
 					tabIndex={this.state.nodes[0].tabIndex}  
 					ref={this.state.nodes[0].id}
-					onClick={(e) => this.onClickEvent(e)}
-					onFocus={ (e) => this.onFocusEvent(e) }
-					onBlur={ (e) => this.onBlurEvent(e) }
-					onKeyDown={(e) => this.onKeyPressedEvent(e)}
 				>
 					<span 
 						className={this.state.nodes[0].focus ? 'focus' : ''} 
@@ -174,6 +187,7 @@ export class TreeView extends Component {
 					>
 						Projects
 					</span>
+				{/* this group is controlled by root */}
 				<ul role="group">
 				  <li role="treeitem" 
 					  tabIndex={this.state.nodes[1].tabIndex}
@@ -236,7 +250,10 @@ export class TreeView extends Component {
 						tabIndex={this.state.nodes[8].tabIndex}  
 						ref={this.state.nodes[8].id}
 				  >
-					<span>
+					<span
+						className={this.state.nodes[8].focus ? 'focus' : ''} 
+						id={'span'+this.state.nodes[8].id} 
+					>
 					  Project 5
 					</span>
 					<ul role="group">
@@ -258,7 +275,7 @@ export class TreeView extends Component {
 				  </li>
 				</ul>
 			  </li>
-			</ul>
+			</ul>{/* end of main list */}
 		  </div>
 
 		);
