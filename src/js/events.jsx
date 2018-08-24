@@ -16,7 +16,15 @@ var nodes = [
 	{id:10, name:'', type:'child', parent:10,  isParent:false, focus:false, tabIndex:-1 },	
 ];
 
-
+/*
+	FOCUS Management:
+	When a single-select tree receives focus:
+		If none of the nodes are selected before the tree receives focus, focus is set on the first node.
+		If a node is selected before the tree receives focus, focus is set on the selected node.
+	When a multi-select tree receives focus:
+		If none of the nodes are selected before the tree receives focus, focus is set on the first node.
+		If one or more nodes are selected before the tree receives focus, focus is set on the first selected node.
+*/	
 export class TreeView extends Component {
 	constructor(props) {
 		super(props);
@@ -55,13 +63,23 @@ export class TreeView extends Component {
 
 	onKeyPressedEvent(e){
 		switch(e.key) {
+			/* ENTER KEY:
+				activates a node, i.e., performs its default action. 
+				For parent nodes, one possible default action is to open or close the node. 
+				In single-select trees where selection does not follow focus (see https://www.w3.org/TR/wai-aria-practices-1.1/#issue-container-generatedID-27), 
+				the default action is typically to select the focused node.
+			*/
 			case 'Enter':
 				if ( 'expanded' in this.state.nodes[this.state.tid] ){
 					this.state.nodes[this.state.tid].expanded = !this.state.nodes[this.state.tid].expanded 
 				}else{
+					//@todo set focus to this element
 					console.log('element can not expand');
 				}
 				break;
+			/* Down Arrow: 
+				Moves focus to the next node that is focusable without opening or closing a node.
+			*/
 			case 'ArrowDown':
 				//@todo this should only move to child element if it is visable
 				//remove focus from last element
@@ -79,6 +97,9 @@ export class TreeView extends Component {
 				this.refs[this.state.tid].focus()
 				this.state.nodes[this.state.tid].tabIndex = 0;
 				break;
+			/* Up Arrow: 
+				Moves focus to the previous node that is focusable without opening or closing a node.
+			*/
 			case 'ArrowUp':
 				//@todo this should only move to child element if it is visable
 				//remove focus from last element
@@ -95,8 +116,35 @@ export class TreeView extends Component {
 				//set focus to this element
 				this.refs[this.state.tid].focus()
 				this.state.nodes[this.state.tid].tabIndex = 0;
+				break;
+			/* Right arrow:
+				When focus is on a closed node, opens the node; focus does not move.
+				When focus is on a open node, moves focus to the first child node.
+				When focus is on an end node, does nothing.	
+			*/				
+			case 'ArrowRight':	
+				console.log('not implimented');
+				break;
+			/* Left arrow:
+				When focus is on an open node, closes the node.
+				When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
+				When focus is on a root node that is also either an end node or a closed node, does nothing.
+			*/
+			case 'ArrowLeft':	
+				console.log('not implimented');
 				break;				
-
+			/* Home: 
+				Moves focus to the first node in the tree without opening or closing a node.
+			*/
+			case 'Home':	
+				console.log('not implimented');
+				break;	
+			/* End: 
+				Moves focus to the last node in the tree that is focusable without opening a node.
+			*/
+			case 'End':	
+				console.log('not implimented');
+				break;				
 			default:
 				console.log(e.key);
 		}		
