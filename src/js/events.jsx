@@ -58,8 +58,10 @@ export class TreeView extends Component {
 
 	onBlurEvent(e){
 		this.state.nodes[this.state.tid].focus = false;
+
 		//return to this node @todo this needs testing
 		this.state.nodes[this.state.tid].tabIndex = 0;
+
 		this.setState({nodes: this.state.nodes});
 	}
 
@@ -89,15 +91,81 @@ export class TreeView extends Component {
 				this.refs[this.state.tid].blur()
 				//@TOD UPDATE THE TARGET ONLY IF ITS VISABLE
 				//update current target id
-				if (nodes.length > this.state.tid+1){
-					this.state.tid += 1;
+
+				//if the element is a expanded list move to next child elemnt in sub list
+				if (this.state.nodes[this.state.tid].expanded == true){
+					console.log('expanded folder moving to next element');
+					if (nodes.length > this.state.tid+1){
+						this.state.tid += 1;
+					}else{
+						//loop back to begining node
+						console.log("end of nodes looping to top");
+						this.state.tid = 0
+					}
+				//else if the element is a child of a expanded folder
+				}else if( !('expanded'  in this.state.nodes[this.state.tid]) ){
+					console.log('file found moving to next element')
+					//else its not expanded find next visible node
+					if (nodes.length > this.state.tid+1){
+						this.state.tid += 1;
+					}else{
+						//loop back to begining node
+						console.log("end of nodes looping to top");
+						this.state.tid = 0
+					}
+				//the element is a collapsed folder move to the next visable element
+				}else if(this.state.nodes[this.state.tid].expanded == false){
+					console.log('collapsed folder find next file')
+					var val = this.state.nodes[this.state.tid]			
+					function sortNumber(a,b) {
+						return a - b;
+					}
+				
+					if ('groups' in val){
+						//sort the children in case they arent sorted
+						var groups = val.groups.sort(sortNumber);
+						//return the last element in the array
+						var myTID = groups[groups.length-1];
+						console.log(myTID);
+						if (nodes.length > myTID+1){
+							console.log(this.state.nodes[myTID]);
+							//the last node is a group but it is not visable find its last child node
+							if ('groups'  in this.state.nodes[myTID]){
+								var val2 = this.state.nodes[myTID];
+								var groups2 = val2.groups.sort(sortNumber);
+								myTID = groups2[groups2.length-1];
+
+								if (nodes.length > myTID+1){
+									console.log('setting tid to '+(myTID + 1))
+									this.state.tid =  myTID + 1;
+								}else{
+									//loop back to begining node
+									console.log("end of nodes looping to top");
+									this.state.tid = 0
+								}								
+							}else{
+								//it is a list element file move to it
+								console.log('found available file list elemet')
+								this.state.tid = myTID + 1;;
+							}	
+						}else{
+							//loop back to begining node
+							console.log("end of nodes looping to top");
+							this.state.tid = 0
+						}	
+					}else{
+						console.log('ERROR in :');
+						console.log(val);
+					}					
+					console.log(val);
+			
+
 				}else{
-					//loop back to begining node
-					console.log("end of nodes looping to top");
-					this.state.tid = 0
+					console.log('ERROR no element found')
 				}
 				//set focus to this element
 				this.refs[this.state.tid].focus()
+				//set its tabindex to 0
 				this.state.nodes[this.state.tid].tabIndex = 0;
 				break;
 			/* Up Arrow: 
