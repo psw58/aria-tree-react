@@ -6,14 +6,14 @@ var nodes = [
 	{id:0, name:'root', parent:'', visable: true, expanded:false, focus:false, groups:[1,2,3,7,8], tabIndex:0 },
 	{id:1, name:'', parent:0, visable: false, focus:false, tabIndex:-1 },
 	{id:2, name:'', parent:0, visable: false, focus:false, tabIndex:-1 },
-	{id:3, name:'', type:'', parent:0, visable: false, isParent:true, expanded:false, focus:false, groups:[4,5,6], tabIndex:-1 },
+	{id:3, name:'', parent:0, visable: false, isParent:true, expanded:false, focus:false, groups:[4,5,6], tabIndex:-1 },
 	{id:4, name:'', parent:3,  visable: false, focus:false, tabIndex:-1 },
 	{id:5, name:'', parent:3,  visable: false, focus:false, tabIndex:-1 },
 	{id:6, name:'', parent:3, visable: false,  focus:false, tabIndex:-1 },
 	{id:7, name:'', parent:0, visable: false, focus:false, tabIndex:-1 },
-	{id:8, name:'', type:'', parent:0, visable: false, isParent:true, expanded:false, focus:false, groups:[9,10], tabIndex:-1 },
+	{id:8, name:'', parent:0, visable: false, isParent:true, expanded:false, focus:false, groups:[9,10], tabIndex:-1 },
 	{id:9, name:'', parent:9, visable: false, focus:false, tabIndex:-1 },
-	{id:10, name:'', type:'child', parent:10, visable: false, focus:false, tabIndex:-1 },	
+	{id:10, name:'', parent:10, visable: false, focus:false, tabIndex:-1 },	
 ];
 
 /*
@@ -108,10 +108,8 @@ export class TreeView extends Component {
 				id = i;
 				break; 
 			}
-		}	
-		
+		}
 		return id;
-
 	}
 
 	onKeyPressedEvent(e){
@@ -212,7 +210,20 @@ export class TreeView extends Component {
 				When focus is on a root node that is also either an end node or a closed node, does nothing.
 			*/
 			case 'ArrowLeft':	
-				console.log('not implimented');
+				console.log('not working properly');
+				//save id to remove focus from last element
+				var oldID = this.state.tid;
+				if ( this.state.nodes[this.state.tid].parent == ''){
+					// When focus is on a root node that is also either an end node or a closed node, does nothing.
+				}else if( this.state.nodes[this.state.tid].expanded == true){
+					// When focus is on an open node, closes the node.
+					this.state.nodes[this.state.tid].expanded = false;
+					this.setNodeVisibleState(this.state.tid)
+				}else {
+						// When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
+						this.state.tid = this.state.nodes[this.state.tid].parent;
+				}
+								
 				break;				
 			/* Home: 
 				Moves focus to the first node in the tree without opening or closing a node.
