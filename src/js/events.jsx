@@ -56,16 +56,7 @@ export class TreeView extends Component {
 	setNodeVisibleState(stateID){
 		const myID = stateID;
 		if ('groups' in this.state.nodes[myID]){
-			this.state.nodes[myID].groups.forEach(element => {
-				//if it has a child node set visible to false
-				/*
-				if (this.state.nodes[element].groups){
-					console.log("setting id " + this.state.nodes[element].id + " children to unsearchable");
-					this.state.nodes[element].groups.forEach(el => {
-						this.state.nodes[el].visable = false;
-					})
-				}				
-				*/
+			this.state.nodes[myID].groups.forEach(element => {					
 				if(this.state.nodes[myID].expanded){
 					//visable is true
 					this.state.nodes[element].visable = true;
@@ -75,13 +66,7 @@ export class TreeView extends Component {
 						this.state.nodes[element].groups.forEach(el => {
 							this.state.nodes[el].visable = true;
 						})
-					}else if( this.state.nodes[element].groups && (this.state.nodes[element].expanded == false) ){
-						console.log("setting id " + this.state.nodes[element].id + " children to unsearchable");
-						this.state.nodes[element].groups.forEach(el => {
-							console.log(this.state.nodes[el].visable +" should not = false")
-							this.state.nodes[el].visable = false;
-						})		
-					}								
+					}							
 				}else{
 					//visivle is false			
 					this.state.nodes[element].visable = false;
@@ -482,3 +467,21 @@ if (this.state.nodes[this.state.tid].expanded == true){
 	console.log('ERROR no element found')
 }
 */
+
+//old
+				//if it has a child node set visible to false
+				/*
+				if (this.state.nodes[element].groups){
+					console.log("setting id " + this.state.nodes[element].id + " children to unsearchable");
+					this.state.nodes[element].groups.forEach(el => {
+						this.state.nodes[el].visable = false;
+					})
+				}		
+					/* This is not required
+					}else if( this.state.nodes[element].groups && (this.state.nodes[element].expanded == false) ){
+						console.log("setting id " + this.state.nodes[element].id + " children to unsearchable");
+						this.state.nodes[element].groups.forEach(el => {
+							console.log(this.state.nodes[el].visable +" should not = false")
+							this.state.nodes[el].visable = false;
+						})		
+				*/	
