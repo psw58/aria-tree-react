@@ -99,6 +99,22 @@ export class TreeView extends Component {
 		this.setState({nodes: this.state.nodes});
 	}
 
+	findVisableInReverse(){
+		console.log("beggining of nodes looping to botttom");
+		var id = this.state.tid;
+		var searchStart = nodes.length-1
+		//find closest visable item
+		for (var i = searchStart; i >= 0; --i){
+			if (this.state.nodes[i].visable == true){
+				id = i;
+				break; 
+			}
+		}	
+		
+		return id;
+
+	}
+
 	onKeyPressedEvent(e){
 		switch(e.key) {
 			/* ENTER KEY:
@@ -121,7 +137,7 @@ export class TreeView extends Component {
 			*/
 			case 'ArrowDown':
 				//save id to remove focus from last element
-				const oldID = this.state.tid;
+				var oldID = this.state.tid;
 				if (this.state.nodes.length > this.state.tid+1){
 					//find closest visable item
 					for (var i=this.state.tid+1; i<this.state.nodes.length; i++){
@@ -152,7 +168,7 @@ export class TreeView extends Component {
 			*/
 			case 'ArrowUp':
 				//save id to remove focus from last element
-				const oldID2 = this.state.tid;
+				var oldID = this.state.tid;
 				//update current target id
 				//@TOD0 UPDATE THE TARGET ONLY IF ITS VISABLE
 				if (this.state.tid > 0){
@@ -166,17 +182,19 @@ export class TreeView extends Component {
 				}else{
 					//loop back to begining node
 					console.log("beggining of nodes looping to botttom");
-					this.state.tid = nodes.length-1
+					//this.state.tid = nodes.length-1
 					//find closest visable item
+					/*
 					for (var i = this.state.tid; i >= 0; --i){
 						if (this.state.nodes[i].visable == true){
 							this.state.tid = i;
 							break; 
 						}
-					}					
+					}
+					*/	
+					this.state.tid = this.findVisableInReverse();				
 				}
-
-				this.moveFocus(oldID2, this.state.tid);
+				this.moveFocus(oldID, this.state.tid);
 				break;
 
 			/* Right arrow:
@@ -198,7 +216,10 @@ export class TreeView extends Component {
 			/* Home: 
 				Moves focus to the first node in the tree without opening or closing a node.
 			*/
-			case 'Home':	
+			case 'Home':
+				var oldID = this.state.tid;
+				this.state.tid = 0;
+				this.moveFocus(oldID, this.state.tid);
 				console.log('not implimented');
 				break;	
 			/* End: 
@@ -206,6 +227,9 @@ export class TreeView extends Component {
 			*/
 			case 'End':	
 				console.log('not implimented');
+				var oldID = this.state.tid;
+				this.state.tid = this.findVisableInReverse();
+				this.moveFocus(oldID, this.state.tid);
 				break;	
 			/* Type-ahead is recommended for all trees, especially for trees with more than 7 root nodes:
 				Type a character: 
