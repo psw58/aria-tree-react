@@ -3,17 +3,17 @@ import ReactDOM from 'react';
 //import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 var nodes = [
-	{id:0, name:'root', type:'root', parent:'', visable: true, isParent:true, expanded:false, focus:false, groups:[1,2,3,7,8], tabIndex:0 },
-	{id:1, name:'', type:'child', parent:0, visable: false, isParent:false, focus:false, tabIndex:-1 },
-	{id:2, name:'', type:'child', parent:0, visable: false, isParent:false, focus:false, tabIndex:-1 },
+	{id:0, name:'root', parent:'', visable: true, expanded:false, focus:false, groups:[1,2,3,7,8], tabIndex:0 },
+	{id:1, name:'', parent:0, visable: false, focus:false, tabIndex:-1 },
+	{id:2, name:'', parent:0, visable: false, focus:false, tabIndex:-1 },
 	{id:3, name:'', type:'', parent:0, visable: false, isParent:true, expanded:false, focus:false, groups:[4,5,6], tabIndex:-1 },
-	{id:4, name:'', type:'child', parent:3,  visable: false, isParent:false, focus:false, tabIndex:-1 },
-	{id:5, name:'', type:'child', parent:3,  visable: false, isParent:false, focus:false, tabIndex:-1 },
-	{id:6, name:'', type:'child', parent:3, visable: false,  isParent:false, focus:false, tabIndex:-1 },
-	{id:7, name:'', type:'child', parent:0, visable: false, isParent:false, focus:false, tabIndex:-1 },
+	{id:4, name:'', parent:3,  visable: false, focus:false, tabIndex:-1 },
+	{id:5, name:'', parent:3,  visable: false, focus:false, tabIndex:-1 },
+	{id:6, name:'', parent:3, visable: false,  focus:false, tabIndex:-1 },
+	{id:7, name:'', parent:0, visable: false, focus:false, tabIndex:-1 },
 	{id:8, name:'', type:'', parent:0, visable: false, isParent:true, expanded:false, focus:false, groups:[9,10], tabIndex:-1 },
-	{id:9, name:'', type:'child', parent:9, visable: false, isParent:false, focus:false, tabIndex:-1 },
-	{id:10, name:'', type:'child', parent:10, visable: false, isParent:false, focus:false, tabIndex:-1 },	
+	{id:9, name:'', parent:9, visable: false, focus:false, tabIndex:-1 },
+	{id:10, name:'', type:'child', parent:10, visable: false, focus:false, tabIndex:-1 },	
 ];
 
 /*
@@ -38,6 +38,7 @@ export class TreeView extends Component {
 	onClickEvent( event ){
 		//@TODO if this element does not have focus give it focus
 		const oldID = this.state.tid;
+		//get the id of the element from the data set
 		if ( event.target.dataset.id ){
 			this.state.tid = parseInt(event.target.dataset.id);
 		}else{
@@ -66,7 +67,13 @@ export class TreeView extends Component {
 				if(this.state.nodes[myID].expanded){
 					//visable is true
 					this.state.nodes[element].visable = true;
-					console.log('setting child visible to true');
+					//if the node is expanded set the children to visible
+					if (this.state.nodes[element].groups && this.state.nodes[element].expanded){
+						console.log("setting id " + this.state.nodes[element].id + " children to searchable");
+						this.state.nodes[element].groups.forEach(el => {
+							this.state.nodes[el].visable = true;
+						})
+					}								
 				}else{
 					//visivle is false
 					this.state.nodes[element].visable = false;
@@ -99,10 +106,8 @@ export class TreeView extends Component {
 		this.setState({nodes: this.state.nodes});
 	}
 
-	findVisableInReverse(){
-		console.log("beggining of nodes looping to botttom");
+	findVisableInReverse( searchStart ){
 		var id = this.state.tid;
-		var searchStart = nodes.length-1
 		//find closest visable item
 		for (var i = searchStart; i >= 0; --i){
 			if (this.state.nodes[i].visable == true){
@@ -172,27 +177,12 @@ export class TreeView extends Component {
 				//update current target id
 				//@TOD0 UPDATE THE TARGET ONLY IF ITS VISABLE
 				if (this.state.tid > 0){
-					//find closest visable item
-					for (var i = this.state.tid-1; i >= 0; --i){
-						if (this.state.nodes[i].visable == true){
-							this.state.tid = i;
-							break; 
-						}
-					}	
+					//find closest visable item to current node
+					this.state.tid = this.findVisableInReverse( this.state.tid-1 );
 				}else{
 					//loop back to begining node
 					console.log("beggining of nodes looping to botttom");
-					//this.state.tid = nodes.length-1
-					//find closest visable item
-					/*
-					for (var i = this.state.tid; i >= 0; --i){
-						if (this.state.nodes[i].visable == true){
-							this.state.tid = i;
-							break; 
-						}
-					}
-					*/	
-					this.state.tid = this.findVisableInReverse();				
+					this.state.tid = this.findVisableInReverse( this.state.nodes.length-1 );				
 				}
 				this.moveFocus(oldID, this.state.tid);
 				break;
@@ -228,7 +218,7 @@ export class TreeView extends Component {
 			case 'End':	
 				console.log('not implimented');
 				var oldID = this.state.tid;
-				this.state.tid = this.findVisableInReverse();
+				this.state.tid = this.findVisableInReverse( this.state.nodes.length-1 );
 				this.moveFocus(oldID, this.state.tid);
 				break;	
 			/* Type-ahead is recommended for all trees, especially for trees with more than 7 root nodes:
