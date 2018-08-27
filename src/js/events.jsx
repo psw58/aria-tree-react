@@ -58,12 +58,14 @@ export class TreeView extends Component {
 		if ('groups' in this.state.nodes[myID]){
 			this.state.nodes[myID].groups.forEach(element => {
 				//if it has a child node set visible to false
+				/*
 				if (this.state.nodes[element].groups){
 					console.log("setting id " + this.state.nodes[element].id + " children to unsearchable");
 					this.state.nodes[element].groups.forEach(el => {
 						this.state.nodes[el].visable = false;
 					})
 				}				
+				*/
 				if(this.state.nodes[myID].expanded){
 					//visable is true
 					this.state.nodes[element].visable = true;
@@ -73,9 +75,15 @@ export class TreeView extends Component {
 						this.state.nodes[element].groups.forEach(el => {
 							this.state.nodes[el].visable = true;
 						})
+					}else if( this.state.nodes[element].groups && (this.state.nodes[element].expanded == false) ){
+						console.log("setting id " + this.state.nodes[element].id + " children to unsearchable");
+						this.state.nodes[element].groups.forEach(el => {
+							console.log(this.state.nodes[el].visable +" should not = false")
+							this.state.nodes[el].visable = false;
+						})		
 					}								
 				}else{
-					//visivle is false
+					//visivle is false			
 					this.state.nodes[element].visable = false;
 				}
 			});
@@ -83,6 +91,7 @@ export class TreeView extends Component {
 			console.log('no groups');
 		}
 	}
+
 
 	moveFocus(curID, nextID){
 		//remove focus from old element 
@@ -193,7 +202,24 @@ export class TreeView extends Component {
 				When focus is on an end node, does nothing.	
 			*/				
 			case 'ArrowRight':	
-				console.log('not implimented');
+				//save id to remove focus from last element
+				var oldID = this.state.tid;
+				if ( !('expanded' in this.state.nodes[this.state.tid]) ){
+					//end node
+				}else if( this.state.nodes[this.state.tid].expanded == false){
+					//open the node
+					this.state.nodes[this.state.tid].expanded = true;
+					this.setNodeVisibleState(this.state.tid)
+				}else{
+					if ('groups' in this.state.nodes[this.state.tid]){
+						//move to first group
+						this.state.tid = this.state.nodes[this.state.tid].groups[0];
+					}else{
+						console.log('ERROR all expanded data nodes must have a group');
+					}
+				}
+
+				this.moveFocus(oldID, this.state.tid);
 				break;
 			/* Left arrow:
 				When focus is on an open node, closes the node.
