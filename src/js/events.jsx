@@ -19,6 +19,7 @@ var nodes = [
 	{id:13, name:'lettersB', parent:12, visable: false, focus:false, tabIndex:-1 },	
 ];
 
+
 /*
 	FOCUS Management:
 	When a single-select tree receives focus:
@@ -36,7 +37,26 @@ export class TreeView extends Component {
 				nodes: nodes,
 				tid:0
 			};
-	  }  
+		}  
+		
+		componentDidMount(){
+			//add refernce to children
+			//this only support 3 levels
+			for (var key in this.refs){
+				if ('refs' in this.refs[key]){
+					for (var key2 in this.refs[key].refs){
+						this.refs[key2] = this.refs[key].refs[key2].ref;
+					}
+					console.log(this.refs[key].refs)
+				}
+				if ( 'ref' in this.refs[key]){
+					this.refs[key] = this.refs[key].ref
+				}
+			}
+			console.log(this.refs);
+			
+
+		}
 
 	onClickEvent( event ){
 		//@TODO if this element does not have focus give it focus
@@ -89,6 +109,7 @@ export class TreeView extends Component {
 
 
 	moveFocus(curID, nextID){
+		console.log('move focus');
 		//remove focus from old element 
 		this.state.nodes[curID].focus = false;
 		this.state.nodes[curID].tabIndex = -1;
@@ -97,6 +118,10 @@ export class TreeView extends Component {
 		this.state.nodes[nextID].tabIndex = 0;
 		this.setState({nodes: this.state.nodes});
 		this.refs[nextID].focus();
+	}
+
+	defineRefs(){
+		this.refs[13]
 	}
 
 	onFocusEvent(e){
@@ -301,6 +326,7 @@ export class TreeView extends Component {
 			<h2 id="tree_label">
 			  Tree View
 			</h2>
+
 			<ul role="tree" aria-labelledby="tree_label"
 				onClick={(e) => this.onClickEvent(e)}
 				onFocus={ (e) => this.onFocusEvent(e) }
@@ -310,7 +336,7 @@ export class TreeView extends Component {
 				{/* the root element */}
 			  	<li role="treeitem"
 					key={this.state.nodes[0].id}
-				  	aria-expanded={this.state.nodes[0].expanded} 
+				  aria-expanded={this.state.nodes[0].expanded} 
 					tabIndex={this.state.nodes[0].tabIndex}  
 					ref={this.state.nodes[0].id}
 					data-visable = {this.state.nodes[0].visable} 
@@ -323,26 +349,19 @@ export class TreeView extends Component {
 					>
 						{this.state.nodes[0].name}
 					</span>
-				{/* this group is controlled by root */}
+					
+				{/* this group is controlled by root if nod has groups start new group item */}
 				<ul role="group">
-				  <li role="treeitem" 
-					  tabIndex={this.state.nodes[1].tabIndex}
-					  className={this.state.nodes[1].focus ? 'focus doc' : 'doc' } 
-					  ref={this.state.nodes[1].id}
-					  data-visable = {this.state.nodes[1].visable} 
-					  data-id={this.state.nodes[1].id}
-				>
-					{this.state.nodes[1].name}
-				  </li>
-				  <li role="treeitem" 
-					  tabIndex={this.state.nodes[2].tabIndex}
-					  className={this.state.nodes[2].focus ? 'focus doc' : 'doc' } 
-					  ref={this.state.nodes[2].id}
-					  data-visable = {this.state.nodes[2].visable} 
-					  data-id={this.state.nodes[2].id}
-				>
-					{this.state.nodes[2].name}
-				  </li>
+					<GroupItem
+						node={this.state.nodes[1]}
+						ref={this.state.nodes[1].id}
+					/>
+
+					<GroupItem
+						node={this.state.nodes[2]}
+						ref={this.state.nodes[2].id}
+					/>
+
 				  <li role="treeitem" 
 						aria-expanded={this.state.nodes[3].expanded} 
 						tabIndex={this.state.nodes[3].tabIndex}  
@@ -358,44 +377,24 @@ export class TreeView extends Component {
 					  {this.state.nodes[3].name}
 					</span>
 					<ul role="group">
-					  <li role="treeitem" 
-						tabIndex={this.state.nodes[4].tabIndex}
-						className={this.state.nodes[4].focus ? 'focus doc' : 'doc' } 
-						ref={this.state.nodes[4].id}
-						data-visable = {this.state.nodes[4].visable} 	
-						data-id={this.state.nodes[4].id}		  
-					  >
-						{this.state.nodes[4].name}
-					  </li>
-					  <li role="treeitem" 
-						tabIndex={this.state.nodes[5].tabIndex}
-						className={this.state.nodes[5].focus ? 'focus doc' : 'doc' } 
-						ref={this.state.nodes[5].id}
-						data-visable = {this.state.nodes[5].visable} 
-						data-id={this.state.nodes[5].id}	
-						>
-						{this.state.nodes[5].name}
-					  </li>
-					  <li role="treeitem" 
-						tabIndex={this.state.nodes[6].tabIndex}
-						className={this.state.nodes[6].focus ? 'focus doc' : 'doc' } 
-						ref={this.state.nodes[6].id}	
-						data-visable = {this.state.nodes[6].visable} 
-						data-id={this.state.nodes[6].id}
-					  >
-						{this.state.nodes[6].name}
-					  </li>
+						<GroupItem
+							node={this.state.nodes[4]}
+							ref={this.state.nodes[4].id}
+						/>
+						<GroupItem
+							node={this.state.nodes[5]}
+							ref={this.state.nodes[5].id}
+						/>
+						<GroupItem
+							node={this.state.nodes[6]}
+							ref={this.state.nodes[6].id}
+						/>
 					</ul>
 				  </li>
-				  <li role="treeitem" 
-						tabIndex={this.state.nodes[7].tabIndex}
-						className={this.state.nodes[7].focus ? 'focus doc' : 'doc' } 
-						ref={this.state.nodes[7].id}	
-						data-visable = {this.state.nodes[7].visable} 
-						data-id={this.state.nodes[7].id}
-					  >
-					{this.state.nodes[7].name}
-				  </li>
+					<GroupItem
+						node={this.state.nodes[7]}
+						ref={this.state.nodes[7].id}
+					/>
 				  <li role="treeitem" 
 						aria-expanded={this.state.nodes[8].expanded} 
 						tabIndex={this.state.nodes[8].tabIndex}  
@@ -411,24 +410,17 @@ export class TreeView extends Component {
 					  {this.state.nodes[8].name}
 					</span>
 					<ul role="group">
-					<li role="treeitem" 
-						tabIndex={this.state.nodes[9].tabIndex}
-						className={this.state.nodes[9].focus ? 'focus doc' : 'doc' } 
+
+					
+
+					<GroupItem
+						node={this.state.nodes[9]}
 						ref={this.state.nodes[9].id}
-						data-visable = {this.state.nodes[9].visable} 	
-						data-id={this.state.nodes[9].id}
-					  >
-						{this.state.nodes[9].name}
-					</li>
-					<li role="treeitem" 
-						tabIndex={this.state.nodes[10].tabIndex}
-						className={this.state.nodes[10].focus ? 'focus doc' : 'doc' } 
-						ref={this.state.nodes[10].id}	
-						data-visable = {this.state.nodes[10].visable} 
-						data-id={this.state.nodes[10].id}
-					  >
-						{this.state.nodes[10].name}
-					  </li>
+					/>
+					<GroupItem
+						node={this.state.nodes[10]}
+						ref={this.state.nodes[10].id}
+					/>
 					</ul>
 				  </li>
 				</ul>
@@ -450,32 +442,11 @@ export class TreeView extends Component {
 				{this.state.nodes[11].name}
 				</span>
 				<ul role="group">
-				<li role="treeitem" 
-						aria-expanded={this.state.nodes[12].expanded} 
-						tabIndex={this.state.nodes[12].tabIndex}  
+					<Group 						
+						node={this.state.nodes[12]}
 						ref={this.state.nodes[12].id}
-						data-visable = {this.state.nodes[12].visable} 
-						data-id={this.state.nodes[12].id}
-				>
-					<span
-						className={this.state.nodes[12].focus ? 'focus' : ''} 
-						id={'span'+this.state.nodes[12].id} 
-						data-id={this.state.nodes[12].id}
-					>
-						{this.state.nodes[12].name}
-					</span>
-					<ul>
-						<li role="treeitem" 
-							tabIndex={this.state.nodes[13].tabIndex}
-							className={this.state.nodes[13].focus ? 'focus doc' : 'doc' } 
-							ref={this.state.nodes[13].id}	
-							data-visable = {this.state.nodes[13].visable} 
-							data-id={this.state.nodes[13].id}
-						>
-							{this.state.nodes[13].name}
-						</li>
-					</ul>
-				</li>
+						nodes={this.state.nodes}
+						/>
 				</ul>
 			</li>
 	  
@@ -486,6 +457,88 @@ export class TreeView extends Component {
 	}
 }
 
+/*
+const Group = React.forwardRef((props, ref)=>(
+	<li role="treeitem" 
+		aria-expanded={props.node.expanded} 
+		tabIndex={props.node.tabIndex}  
+		ref={ref}
+		data-visable = {props.node.visable} 
+		data-id={props.node.id}
+	>
+		<span
+			className={props.node.focus ? 'focus' : ''} 
+			id={'span'+props.node.id} 
+			data-id={props.node.id}			
+		>
+			{props.node.name}
+		</span>
+		<ul>
+			<GroupItem
+				node={props.nodes[13]}
+				ref={ref}
+			/>
+			</ul>
+	</li>
+));
+
+
+const GroupItem = React.forwardRef((props, ref)=>(
+	<li role="treeitem" 
+		tabIndex={props.node.tabIndex}
+		className={props.node.focus ? 'focus doc' : 'doc' } 
+		data-visable = {props.node.visable} 
+		data-id={props.node.id}
+		ref={ref}
+	>
+		{props.node.name}
+	</li>
+));
+*/
+class Group extends React.Component {
+	
+  render() {
+    return (
+			<li role="treeitem" 
+			aria-expanded={this.props.node.expanded} 
+			tabIndex={this.props.node.tabIndex}  
+			ref={(node) => { this.ref = node; }}
+			data-visable = {this.props.node.visable} 
+			data-id={this.props.node.id}
+		>
+			<span
+				className={this.props.node.focus ? 'focus' : ''} 
+				id={'span'+this.props.node.id} 
+				data-id={this.props.node.id}			
+			>
+				{this.props.node.name}
+			</span>
+			<ul>
+				<GroupItem
+					node={this.props.nodes[13]}
+					ref={this.props.nodes[13].id}
+				/>
+				</ul>
+		</li>
+    );
+  }
+}
+
+class GroupItem extends React.Component {
+  render() {
+    return (
+			<li role="treeitem" 
+			tabIndex={this.props.node.tabIndex}
+			className={this.props.node.focus ? 'focus doc' : 'doc' } 
+			data-visable = {this.props.node.visable} 
+			data-id={this.props.node.id}
+			ref={(node) => { this.ref = node; }}
+		>
+			{this.props.node.name}
+		</li>
+    );
+  }
+}
 
 
 /* old arrow down
@@ -581,3 +634,29 @@ if (this.state.nodes[this.state.tid].expanded == true){
 							this.state.nodes[el].visable = false;
 						})		
 				*/	
+
+/*
+				<li role="treeitem" 
+						aria-expanded={this.state.nodes[12].expanded} 
+						tabIndex={this.state.nodes[12].tabIndex}  
+						ref={this.state.nodes[12].id}
+						data-visable = {this.state.nodes[12].visable} 
+						data-id={this.state.nodes[12].id}
+				>
+					<span
+						className={this.state.nodes[12].focus ? 'focus' : ''} 
+						id={'span'+this.state.nodes[12].id} 
+						data-id={this.state.nodes[12].id}
+					>
+						{this.state.nodes[12].name}
+					</span>
+					
+					<ul>
+					<GroupItem
+						node={this.state.nodes[13]}
+						ref={this.state.nodes[13].id}
+					/>
+					</ul>
+
+				</li>
+				*/
