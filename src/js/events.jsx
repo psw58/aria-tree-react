@@ -3,17 +3,17 @@ import ReactDOM from 'react';
 //import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 var nodes = [
-	{id:0, name:'root', parent:'', visable: true, expanded:false, focus:false, groups:[1,2,3,7,8], tabIndex:0 },
-	{id:1, name:'', parent:0, visable: false, focus:false, tabIndex:-1 },
-	{id:2, name:'', parent:0, visable: false, focus:false, tabIndex:-1 },
-	{id:3, name:'', parent:0, visable: false, isParent:true, expanded:false, focus:false, groups:[4,5,6], tabIndex:-1 },
-	{id:4, name:'', parent:3,  visable: false, focus:false, tabIndex:-1 },
-	{id:5, name:'', parent:3,  visable: false, focus:false, tabIndex:-1 },
-	{id:6, name:'', parent:3, visable: false,  focus:false, tabIndex:-1 },
-	{id:7, name:'', parent:0, visable: false, focus:false, tabIndex:-1 },
-	{id:8, name:'', parent:0, visable: false, isParent:true, expanded:false, focus:false, groups:[9,10], tabIndex:-1 },
-	{id:9, name:'', parent:9, visable: false, focus:false, tabIndex:-1 },
-	{id:10, name:'', parent:10, visable: false, focus:false, tabIndex:-1 },	
+	{id:0, name:'projects', parent:'', visable: true, expanded:false, focus:false, groups:[1,2,3,7,8], tabIndex:0 },
+	{id:1, name:'doc1', parent:0, visable: false, focus:false, tabIndex:-1 },
+	{id:2, name:'doc2', parent:0, visable: false, focus:false, tabIndex:-1 },
+	{id:3, name:'project1', parent:0, visable: false,  expanded:false, focus:false, groups:[4,5,6], tabIndex:-1 },
+	{id:4, name:'doc1A', parent:3,  visable: false, focus:false, tabIndex:-1 },
+	{id:5, name:'doc1B', parent:3,  visable: false, focus:false, tabIndex:-1 },
+	{id:6, name:'doc1C', parent:3, visable: false,  focus:false, tabIndex:-1 },
+	{id:7, name:'doc3', parent:0, visable: false, focus:false, tabIndex:-1 },
+	{id:8, name:'project2', parent:0, visable: false,  expanded:false, focus:false, groups:[9,10], tabIndex:-1 },
+	{id:9, name:'doc2A', parent:9, visable: false, focus:false, tabIndex:-1 },
+	{id:10, name:'doc2B', parent:10, visable: false, focus:false, tabIndex:-1 },	
 ];
 
 /*
@@ -213,17 +213,18 @@ export class TreeView extends Component {
 				console.log('not working properly');
 				//save id to remove focus from last element
 				var oldID = this.state.tid;
-				if ( this.state.nodes[this.state.tid].parent == ''){
+				if ( this.state.nodes[this.state.tid].parent === '' &&  this.state.nodes[this.state.tid].expanded == false){
 					// When focus is on a root node that is also either an end node or a closed node, does nothing.
 				}else if( this.state.nodes[this.state.tid].expanded == true){
 					// When focus is on an open node, closes the node.
 					this.state.nodes[this.state.tid].expanded = false;
 					this.setNodeVisibleState(this.state.tid)
 				}else {
-						// When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
-						this.state.tid = this.state.nodes[this.state.tid].parent;
+					// When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
+					this.state.tid = this.state.nodes[this.state.tid].parent;
+					this.setNodeVisibleState(this.state.tid)
 				}
-								
+				this.moveFocus(oldID, this.state.tid);			
 				break;				
 			/* Home: 
 				Moves focus to the first node in the tree without opening or closing a node.
@@ -246,10 +247,39 @@ export class TreeView extends Component {
 			/* Type-ahead is recommended for all trees, especially for trees with more than 7 root nodes:
 				Type a character: 
 					focus moves to the next node with a name that starts with the typed character.
-				Type multiple characters in rapid succession: 
-					focus moves to the next node with a name that starts with the string of characters typed.
+				* multiple characters not supported
 				* (Optional): Expands all siblings that are at the same level as the current node.
-			*/			
+			*/		
+			case (e.key.match(/^[a-zA-Z]{1}$/) || {}).input:
+				console.log('regex');
+				var oldID = this.state.tid;
+				var found = false;
+				for (var i=this.state.tid+1; i<this.state.nodes.length; i++){
+					var elem = this.state.nodes[i];
+					if ( ('visable' in elem) && (elem.visable == true) && (e.key == elem.name[0]) ) {
+						this.state.tid = i;
+						found = true;
+						break;
+					}
+				}
+				//if not found search from beginning
+				if (!found){
+					for (var i=0; i<this.state.tid+1; i++){
+						var elem = this.state.nodes[i];
+						if ( ('visable' in elem) && (elem.visable == true) && (e.key == elem.name[0]) ) {
+							this.state.tid = i;
+							found = true;
+							break;
+						}
+					}					
+				}
+
+				if(!found){
+					console.log('no search results found for '+e.key)
+				}else{
+					this.moveFocus(oldID, this.state.tid);
+				}
+				break;	
 			default:
 				console.log(e.key);
 		}		
