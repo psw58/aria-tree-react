@@ -417,44 +417,6 @@ export class TreeView extends Component {
 	}
 }
 
-/*
-const Group = React.forwardRef((props, ref)=>(
-	<li role="treeitem" 
-		aria-expanded={props.node.expanded} 
-		tabIndex={props.node.tabIndex}  
-		ref={ref}
-		data-visable = {props.node.visable} 
-		data-id={props.node.id}
-	>
-		<span
-			className={props.node.focus ? 'focus' : ''} 
-			id={'span'+props.node.id} 
-			data-id={props.node.id}			
-		>
-			{props.node.name}
-		</span>
-		<ul>
-			<GroupItem
-				node={props.nodes[13]}
-				ref={ref}
-			/>
-			</ul>
-	</li>
-));
-
-
-const GroupItem = React.forwardRef((props, ref)=>(
-	<li role="treeitem" 
-		tabIndex={props.node.tabIndex}
-		className={props.node.focus ? 'focus doc' : 'doc' } 
-		data-visable = {props.node.visable} 
-		data-id={props.node.id}
-		ref={ref}
-	>
-		{props.node.name}
-	</li>
-));
-*/
 class Group extends React.Component {
 	
   render() {
@@ -624,3 +586,43 @@ if (this.state.nodes[this.state.tid].expanded == true){
 
 				</li>
 				*/
+
+
+/*
+const Group = React.forwardRef((props, ref)=>(
+	<li role="treeitem" 
+		aria-expanded={props.node.expanded} 
+		tabIndex={props.node.tabIndex}  
+		ref={ref}
+		data-visable = {props.node.visable} 
+		data-id={props.node.id}
+	>
+		<span
+			className={props.node.focus ? 'focus' : ''} 
+			id={'span'+props.node.id} 
+			data-id={props.node.id}			
+		>
+			{props.node.name}
+		</span>
+		<ul>
+			<GroupItem
+				node={props.nodes[13]}
+				ref={ref}
+			/>
+			</ul>
+	</li>
+));
+
+
+const GroupItem = React.forwardRef((props, ref)=>(
+	<li role="treeitem" 
+		tabIndex={props.node.tabIndex}
+		className={props.node.focus ? 'focus doc' : 'doc' } 
+		data-visable = {props.node.visable} 
+		data-id={props.node.id}
+		ref={ref}
+	>
+		{props.node.name}
+	</li>
+));
+*/				
