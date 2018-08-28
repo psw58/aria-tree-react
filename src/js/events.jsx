@@ -14,6 +14,10 @@ var nodes = [
 	{id:8, name:'project2', parent:0, visable: false,  expanded:false, focus:false, groups:[9,10], tabIndex:-1 },
 	{id:9, name:'doc2A', parent:9, visable: false, focus:false, tabIndex:-1 },
 	{id:10, name:'doc2B', parent:10, visable: false, focus:false, tabIndex:-1 },	
+	{id:11, name:'letters', parent:'', visable: false,  expanded:false, focus:false, groups:[11,12,13], tabIndex:-1 },
+	{id:12, name:'lettersA', parent:9, visable: false, focus:false, tabIndex:-1 },
+	{id:13, name:'lettersB', parent:10, visable: false, focus:false, tabIndex:-1 },	
+	{id:13, name:'lattersC', parent:10, visable: false, focus:false, tabIndex:-1 },
 ];
 
 /*
@@ -312,7 +316,7 @@ export class TreeView extends Component {
 						id={'span'+this.state.nodes[0].id} 
 						data-id={this.state.nodes[0].id}
 					>
-						Projects
+						{this.state.nodes[0].name}
 					</span>
 				{/* this group is controlled by root */}
 				<ul role="group">
@@ -323,7 +327,7 @@ export class TreeView extends Component {
 					  data-visable = {this.state.nodes[1].visable} 
 					  data-id={this.state.nodes[1].id}
 				>
-					project-1.docx
+					{this.state.nodes[1].name}
 				  </li>
 				  <li role="treeitem" 
 					  tabIndex={this.state.nodes[2].tabIndex}
@@ -332,7 +336,7 @@ export class TreeView extends Component {
 					  data-visable = {this.state.nodes[2].visable} 
 					  data-id={this.state.nodes[2].id}
 				>
-					project-2.docx
+					{this.state.nodes[2].name}
 				  </li>
 				  <li role="treeitem" 
 						aria-expanded={this.state.nodes[3].expanded} 
@@ -346,7 +350,7 @@ export class TreeView extends Component {
 						id={'span'+this.state.nodes[3].id} 
 						data-id={this.state.nodes[3].id}
 					>
-					  Project 3
+					  {this.state.nodes[3].name}
 					</span>
 					<ul role="group">
 					  <li role="treeitem" 
@@ -356,7 +360,7 @@ export class TreeView extends Component {
 						data-visable = {this.state.nodes[4].visable} 	
 						data-id={this.state.nodes[4].id}		  
 					  >
-						project-3A.docx
+						{this.state.nodes[4].name}
 					  </li>
 					  <li role="treeitem" 
 						tabIndex={this.state.nodes[5].tabIndex}
@@ -365,7 +369,7 @@ export class TreeView extends Component {
 						data-visable = {this.state.nodes[5].visable} 
 						data-id={this.state.nodes[5].id}	
 						>
-						project-3B.docx
+						{this.state.nodes[5].name}
 					  </li>
 					  <li role="treeitem" 
 						tabIndex={this.state.nodes[6].tabIndex}
@@ -374,7 +378,7 @@ export class TreeView extends Component {
 						data-visable = {this.state.nodes[6].visable} 
 						data-id={this.state.nodes[6].id}
 					  >
-						project-3C.docx
+						{this.state.nodes[6].name}
 					  </li>
 					</ul>
 				  </li>
@@ -385,7 +389,7 @@ export class TreeView extends Component {
 						data-visable = {this.state.nodes[7].visable} 
 						data-id={this.state.nodes[7].id}
 					  >
-					project-4.docx
+					{this.state.nodes[7].name}
 				  </li>
 				  <li role="treeitem" 
 						aria-expanded={this.state.nodes[8].expanded} 
@@ -399,7 +403,7 @@ export class TreeView extends Component {
 						id={'span'+this.state.nodes[8].id} 
 						data-id={this.state.nodes[8].id}
 					>
-					  Project 5
+					  {this.state.nodes[8].name}
 					</span>
 					<ul role="group">
 					<li role="treeitem" 
@@ -409,7 +413,7 @@ export class TreeView extends Component {
 						data-visable = {this.state.nodes[9].visable} 	
 						data-id={this.state.nodes[9].id}
 					  >
-						project-5A.docx
+						{this.state.nodes[9].name}
 					</li>
 					<li role="treeitem" 
 						tabIndex={this.state.nodes[10].tabIndex}
@@ -418,12 +422,34 @@ export class TreeView extends Component {
 						data-visable = {this.state.nodes[10].visable} 
 						data-id={this.state.nodes[10].id}
 					  >
-						project-5B.docx
+						{this.state.nodes[10].name}
 					  </li>
 					</ul>
 				  </li>
 				</ul>
 			  </li>
+
+			<li role="treeitem" aria-expanded="false">
+				<span>
+				Letters
+				</span>
+				<ul role="group">
+				<li role="treeitem" aria-expanded="false">
+					<span>
+					letter-1
+					</span>
+					<ul>
+					<li role="treeitem" class="doc">
+						letter-1A.docx
+					</li>
+					<li role="treeitem" class="doc">
+						letter-1B.docx
+					</li>
+					</ul>
+				</li>
+				</ul>
+			</li>
+	  
 			</ul>{/* end of main list */}
 		  </div>
 
