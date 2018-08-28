@@ -12,7 +12,7 @@ var nodes = [
 	{id:6, name:'doc1C', parent:3, visable: false,  focus:false, tabIndex:-1 },
 	{id:7, name:'doc3', parent:0, visable: false, focus:false, tabIndex:-1 },
 	{id:8, name:'project2', parent:0, visable: false,  expanded:false, focus:false, groups:[9,10], tabIndex:-1 },
-	{id:9, name:'doc2A', parent:9, visable: false, focus:false, tabIndex:-1 },
+	{id:9, name:'doc2A', parent:8, visable: false, focus:false, tabIndex:-1 },
 	{id:10, name:'doc2B', parent:10, visable: false, focus:false, tabIndex:-1 },	
 	{id:11, name:'letters', parent:'', visable: true,  expanded:false, focus:false, groups:[12], tabIndex:-1 },
 	{id:12, name:'letters', parent: 11, visable: false,  expanded:false, focus:false, groups:[13], tabIndex:-1 },
@@ -248,13 +248,16 @@ export class TreeView extends Component {
 				//save id to remove focus from last element
 				var oldID = this.state.tid;
 				if ( this.state.nodes[this.state.tid].parent === '' &&  this.state.nodes[this.state.tid].expanded == false){
+					console.log("root element")
 					// When focus is on a root node that is also either an end node or a closed node, does nothing.
 				}else if( this.state.nodes[this.state.tid].expanded == true){
+					console.log("expanded element closing")
 					// When focus is on an open node, closes the node.
 					this.state.nodes[this.state.tid].expanded = false;
 					this.setNodeVisibleState(this.state.tid)
 				}else {
 					// When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
+					console.log("move to parent element")
 					this.state.tid = this.state.nodes[this.state.tid].parent;
 					this.setNodeVisibleState(this.state.tid)
 				}
@@ -362,67 +365,23 @@ export class TreeView extends Component {
 						ref={this.state.nodes[2].id}
 					/>
 
-				  <li role="treeitem" 
-						aria-expanded={this.state.nodes[3].expanded} 
-						tabIndex={this.state.nodes[3].tabIndex}  
+					<Group 						
+						node={this.state.nodes[3]}
 						ref={this.state.nodes[3].id}
-						data-visable = {this.state.nodes[3].visable} 
-						data-id={this.state.nodes[3].id}
-				  >
-					<span
-						className={this.state.nodes[3].focus ? 'focus' : ''} 
-						id={'span'+this.state.nodes[3].id} 
-						data-id={this.state.nodes[3].id}
-					>
-					  {this.state.nodes[3].name}
-					</span>
-					<ul role="group">
-						<GroupItem
-							node={this.state.nodes[4]}
-							ref={this.state.nodes[4].id}
+						nodes={this.state.nodes}
 						/>
-						<GroupItem
-							node={this.state.nodes[5]}
-							ref={this.state.nodes[5].id}
-						/>
-						<GroupItem
-							node={this.state.nodes[6]}
-							ref={this.state.nodes[6].id}
-						/>
-					</ul>
-				  </li>
+
 					<GroupItem
 						node={this.state.nodes[7]}
 						ref={this.state.nodes[7].id}
 					/>
-				  <li role="treeitem" 
-						aria-expanded={this.state.nodes[8].expanded} 
-						tabIndex={this.state.nodes[8].tabIndex}  
+
+					<Group 						
+						node={this.state.nodes[8]}
 						ref={this.state.nodes[8].id}
-						data-visable = {this.state.nodes[8].visable} 
-						data-id={this.state.nodes[8].id}
-				  >
-					<span
-						className={this.state.nodes[8].focus ? 'focus' : ''} 
-						id={'span'+this.state.nodes[8].id} 
-						data-id={this.state.nodes[8].id}
-					>
-					  {this.state.nodes[8].name}
-					</span>
-					<ul role="group">
+						nodes={this.state.nodes}
+						/>
 
-					
-
-					<GroupItem
-						node={this.state.nodes[9]}
-						ref={this.state.nodes[9].id}
-					/>
-					<GroupItem
-						node={this.state.nodes[10]}
-						ref={this.state.nodes[10].id}
-					/>
-					</ul>
-				  </li>
 				</ul>
 			  </li>
 
@@ -441,6 +400,7 @@ export class TreeView extends Component {
 
 				{this.state.nodes[11].name}
 				</span>
+
 				<ul role="group">
 					<Group 						
 						node={this.state.nodes[12]}
@@ -514,10 +474,14 @@ class Group extends React.Component {
 				{this.props.node.name}
 			</span>
 			<ul>
-				<GroupItem
-					node={this.props.nodes[13]}
-					ref={this.props.nodes[13].id}
-				/>
+				{this.props.node.groups.map((id) => 
+					<GroupItem
+						node={this.props.nodes[id]}
+						ref={this.props.nodes[id].id}
+						key={this.props.nodes[id].id}
+					/>
+				)}
+				
 				</ul>
 		</li>
     );
