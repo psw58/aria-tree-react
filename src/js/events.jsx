@@ -14,10 +14,9 @@ var nodes = [
 	{id:8, name:'project2', parent:0, visable: false,  expanded:false, focus:false, groups:[9,10], tabIndex:-1 },
 	{id:9, name:'doc2A', parent:9, visable: false, focus:false, tabIndex:-1 },
 	{id:10, name:'doc2B', parent:10, visable: false, focus:false, tabIndex:-1 },	
-	{id:11, name:'letters', parent:'', visable: false,  expanded:false, focus:false, groups:[11,12,13], tabIndex:-1 },
-	{id:12, name:'lettersA', parent:9, visable: false, focus:false, tabIndex:-1 },
-	{id:13, name:'lettersB', parent:10, visable: false, focus:false, tabIndex:-1 },	
-	{id:13, name:'lattersC', parent:10, visable: false, focus:false, tabIndex:-1 },
+	{id:11, name:'letters', parent:'', visable: true,  expanded:false, focus:false, groups:[12], tabIndex:-1 },
+	{id:12, name:'letters', parent: 11, visable: false,  expanded:false, focus:false, groups:[13], tabIndex:-1 },
+	{id:13, name:'lettersB', parent:12, visable: false, focus:false, tabIndex:-1 },	
 ];
 
 /*
@@ -32,11 +31,11 @@ var nodes = [
 export class TreeView extends Component {
 	constructor(props) {
 		super(props);
-		//create a state variable that holds the data query
-		this.state = {
-		  nodes: nodes,
-		  tid:0
-		};
+			//create a state variable that holds the data query
+			this.state = {
+				nodes: nodes,
+				tid:0
+			};
 	  }  
 
 	onClickEvent( event ){
@@ -72,8 +71,15 @@ export class TreeView extends Component {
 						})
 					}							
 				}else{
-					//visivle is false			
+					//visible is false			
 					this.state.nodes[element].visable = false;
+					//set child nodes to hiden
+					if (this.state.nodes[element].groups && this.state.nodes[element].expanded){
+						console.log("setting id " + this.state.nodes[element].id + " children to searchable");
+						this.state.nodes[element].groups.forEach(el => {
+							this.state.nodes[el].visable = false;
+						})
+					}						
 				}
 			});
 		}else{
@@ -214,7 +220,6 @@ export class TreeView extends Component {
 				When focus is on a root node that is also either an end node or a closed node, does nothing.
 			*/
 			case 'ArrowLeft':	
-				console.log('not working properly');
 				//save id to remove focus from last element
 				var oldID = this.state.tid;
 				if ( this.state.nodes[this.state.tid].parent === '' &&  this.state.nodes[this.state.tid].expanded == false){
@@ -429,22 +434,46 @@ export class TreeView extends Component {
 				</ul>
 			  </li>
 
-			<li role="treeitem" aria-expanded="false">
-				<span>
-				Letters
+			<li role="treeitem" 
+				aria-expanded={this.state.nodes[11].expanded} 
+				tabIndex={this.state.nodes[11].tabIndex}  
+				ref={this.state.nodes[11].id}
+				data-visable = {this.state.nodes[11].visable} 
+				data-id={this.state.nodes[11].id}
+			>
+				<span
+					className={this.state.nodes[11].focus ? 'focus' : ''} 
+					id={'span'+this.state.nodes[11].id} 
+					data-id={this.state.nodes[11].id}			
+				>
+
+				{this.state.nodes[11].name}
 				</span>
 				<ul role="group">
-				<li role="treeitem" aria-expanded="false">
-					<span>
-					letter-1
+				<li role="treeitem" 
+						aria-expanded={this.state.nodes[12].expanded} 
+						tabIndex={this.state.nodes[12].tabIndex}  
+						ref={this.state.nodes[12].id}
+						data-visable = {this.state.nodes[12].visable} 
+						data-id={this.state.nodes[12].id}
+				>
+					<span
+						className={this.state.nodes[12].focus ? 'focus' : ''} 
+						id={'span'+this.state.nodes[12].id} 
+						data-id={this.state.nodes[12].id}
+					>
+						{this.state.nodes[12].name}
 					</span>
 					<ul>
-					<li role="treeitem" class="doc">
-						letter-1A.docx
-					</li>
-					<li role="treeitem" class="doc">
-						letter-1B.docx
-					</li>
+						<li role="treeitem" 
+							tabIndex={this.state.nodes[13].tabIndex}
+							className={this.state.nodes[13].focus ? 'focus doc' : 'doc' } 
+							ref={this.state.nodes[13].id}	
+							data-visable = {this.state.nodes[13].visable} 
+							data-id={this.state.nodes[13].id}
+						>
+							{this.state.nodes[13].name}
+						</li>
 					</ul>
 				</li>
 				</ul>
