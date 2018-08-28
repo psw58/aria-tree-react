@@ -251,9 +251,9 @@ export class TreeView extends Component {
 				* (Optional): Expands all siblings that are at the same level as the current node.
 			*/		
 			case (e.key.match(/^[a-zA-Z]{1}$/) || {}).input:
-				console.log('regex');
 				var oldID = this.state.tid;
 				var found = false;
+				//start search from current node
 				for (var i=this.state.tid+1; i<this.state.nodes.length; i++){
 					var elem = this.state.nodes[i];
 					if ( ('visable' in elem) && (elem.visable == true) && (e.key == elem.name[0]) ) {
