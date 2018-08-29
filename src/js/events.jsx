@@ -324,12 +324,18 @@ export class TreeView extends Component {
 	}
 
 	render() {
+		//get all root nodes
+		var roots = this.state.nodes.filter((elem, i)=>{
+			if (elem.parent===''){
+				return true;
+			}else {return false;}
+		})
+		console.log(roots);
 		return (
 			<div>
 			<h2 id="tree_label">
 			  Tree View
 			</h2>
-
 			<ul role="tree" aria-labelledby="tree_label"
 				onClick={(e) => this.onClickEvent(e)}
 				onFocus={ (e) => this.onFocusEvent(e) }
@@ -337,6 +343,73 @@ export class TreeView extends Component {
 				onKeyDown={(e) => this.onKeyPressedEvent(e)}
 			>
 				{/* the root element */}
+				{ 
+					roots.map( (elem, i)=>{
+					return <li role="treeitem"
+							key={elem.id}
+							aria-expanded={elem.expanded} 
+							tabIndex={elem.tabIndex}  
+							ref={elem.id}
+							data-visable = {elem.visable} 
+							data-id={elem.id}
+						>
+						<span 
+							className={elem.focus ? 'focus' : ''} 
+							id={'span'+elem.id} 
+							data-id={elem.id}
+						>
+							{elem.name}
+						</span>
+						{/* groups go here */}
+					{/*<ul role="group">
+						elem.groups.map( (group, i)=>{
+						console.log(group)
+						return 
+							<GroupItem
+								node={this.state.nodes[group]}
+								ref={this.state.nodes[group].id}
+							/>
+						})
+					
+
+					</ul>
+					*/}
+					{
+						<ul role="group">
+							<GroupItem
+								node={this.state.nodes[1]}
+								ref={this.state.nodes[1].id}
+							/>
+
+							<GroupItem
+								node={this.state.nodes[2]}
+								ref={this.state.nodes[2].id}
+							/>
+
+							<Group 						
+								node={this.state.nodes[3]}
+								ref={this.state.nodes[3].id}
+								nodes={this.state.nodes}
+								/>
+
+							<GroupItem
+								node={this.state.nodes[7]}
+								ref={this.state.nodes[7].id}
+							/>
+
+							<Group 						
+								node={this.state.nodes[8]}
+								ref={this.state.nodes[8].id}
+								nodes={this.state.nodes}
+								/>
+
+						</ul>						
+
+					}
+						</li>
+				})}
+			</ul>
+				{/*
 			  	<li role="treeitem"
 					key={this.state.nodes[0].id}
 				  aria-expanded={this.state.nodes[0].expanded} 
@@ -352,8 +425,8 @@ export class TreeView extends Component {
 					>
 						{this.state.nodes[0].name}
 					</span>
-					
-				{/* this group is controlled by root if nod has groups start new group item */}
+				*/}
+				{/* this group is controlled by root if nod has groups start new group item *
 				<ul role="group">
 					<GroupItem
 						node={this.state.nodes[1]}
@@ -409,7 +482,7 @@ export class TreeView extends Component {
 						/>
 				</ul>
 			</li>
-	  
+				
 			</ul>{/* end of main list */}
 		  </div>
 
