@@ -19,7 +19,6 @@ var nodes = [
 	{id:13, name:'lettersB', parent:12, visable: false, focus:false, tabIndex:-1 },	
 ];
 
-
 /*
 	FOCUS Management:
 	When a single-select tree receives focus:
@@ -38,25 +37,6 @@ export class TreeView extends Component {
 				tid:0
 			};
 		}  
-		
-		componentDidMount(){
-			//add refernce to children
-			//this only support 3 levels
-			for (var key in this.refs){
-				if ('refs' in this.refs[key]){
-					for (var key2 in this.refs[key].refs){
-						this.refs[key2] = this.refs[key].refs[key2].ref;
-					}
-					console.log(this.refs[key].refs)
-				}
-				if ( 'ref' in this.refs[key]){
-					this.refs[key] = this.refs[key].ref
-				}
-			}
-			console.log(this.refs);
-			
-
-		}
 
 	onClickEvent( event ){
 		//@TODO if this element does not have focus give it focus
@@ -149,7 +129,8 @@ export class TreeView extends Component {
 
 	onKeyPressedEvent(e){
 		switch(e.key) {
-			/* ENTER KEY:
+
+			/* ENTER KEY: --------------------------------------------------
 				activates a node, i.e., performs its default action. 
 				For parent nodes, one possible default action is to open or close the node. 
 				In single-select trees where selection does not follow focus (see https://www.w3.org/TR/wai-aria-practices-1.1/#issue-container-generatedID-27), 
@@ -164,7 +145,8 @@ export class TreeView extends Component {
 					console.log('element can not expand');
 				}
 				break;
-			/* Down Arrow: 
+
+			/* Down Arrow: ---------------------------------------------------
 				Moves focus to the next node that is focusable without opening or closing a node.
 			*/
 			case 'ArrowDown':
@@ -190,12 +172,11 @@ export class TreeView extends Component {
 					console.log("beggining of nodes looping to root");
 					this.state.tid = 0
 				}
-				
 				//set focus to this element		
 				this.moveFocus(oldID, this.state.tid);
-
 				break;
-			/* Up Arrow: 
+
+			/* Up Arrow: --------------------------------------------------------
 				Moves focus to the previous node that is focusable without opening or closing a node.
 			*/
 			case 'ArrowUp':
@@ -214,7 +195,7 @@ export class TreeView extends Component {
 				this.moveFocus(oldID, this.state.tid);
 				break;
 
-			/* Right arrow:
+			/* Right arrow: ------------------------------------------------------
 				When focus is on a closed node, opens the node; focus does not move.
 				When focus is on a open node, moves focus to the first child node.
 				When focus is on an end node, does nothing.	
@@ -239,7 +220,8 @@ export class TreeView extends Component {
 
 				this.moveFocus(oldID, this.state.tid);
 				break;
-			/* Left arrow:
+
+			/* Left arrow: --------------------------------------------------------
 				When focus is on an open node, closes the node.
 				When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
 				When focus is on a root node that is also either an end node or a closed node, does nothing.
@@ -262,8 +244,9 @@ export class TreeView extends Component {
 					this.setNodeVisibleState(this.state.tid)
 				}
 				this.moveFocus(oldID, this.state.tid);			
-				break;				
-			/* Home: 
+				break;	
+
+			/* Home: ----------------------------------------------------------------
 				Moves focus to the first node in the tree without opening or closing a node.
 			*/
 			case 'Home':
@@ -272,7 +255,8 @@ export class TreeView extends Component {
 				this.moveFocus(oldID, this.state.tid);
 				console.log('not implimented');
 				break;	
-			/* End: 
+
+			/* End: ---------------------------------------------------------------------
 				Moves focus to the last node in the tree that is focusable without opening a node.
 			*/
 			case 'End':	
@@ -281,7 +265,9 @@ export class TreeView extends Component {
 				this.state.tid = this.findVisableInReverse( this.state.nodes.length-1 );
 				this.moveFocus(oldID, this.state.tid);
 				break;	
-			/* Type-ahead is recommended for all trees, especially for trees with more than 7 root nodes:
+
+			/* CHARACTER: -----------------------------------------------------------------
+				Type-ahead is recommended for all trees, especially for trees with more than 7 root nodes:
 				Type a character: 
 					focus moves to the next node with a name that starts with the typed character.
 				* multiple characters not supported
@@ -310,392 +296,136 @@ export class TreeView extends Component {
 						}
 					}					
 				}
-
 				if(!found){
 					console.log('no search results found for '+e.key)
 				}else{
 					this.moveFocus(oldID, this.state.tid);
 				}
 				break;	
-			default:
+
+			// DEFAULT: -------------------------------------------------------------------
+			default: 
 				console.log(e.key);
 		}		
 		this.setState({nodes: this.state.nodes});
 	}
 
+	//only supports tree nodes max - three levels deep 
+	// @TODO traverse full node list 
 	render() {
 		//get all root nodes
 		var roots = this.state.nodes.filter((elem, i)=>{
-			if (elem.parent===''){
+			//root elements have no parent
+			if (elem.parent === ''){
 				return true;
 			}else {return false;}
 		})
-		console.log(roots);
+
 		return (
 			<div>
-			<h2 id="tree_label">
-			  Tree View
-			</h2>
-			<ul role="tree" aria-labelledby="tree_label"
-				onClick={(e) => this.onClickEvent(e)}
-				onFocus={ (e) => this.onFocusEvent(e) }
-				onBlur={ (e) => this.onBlurEvent(e) }
-				onKeyDown={(e) => this.onKeyPressedEvent(e)}
-			>
-				{/* the root element */}
-				{ 
-					roots.map( (elem, i)=>{
-					return <li role="treeitem"
-							key={elem.id}
-							aria-expanded={elem.expanded} 
-							tabIndex={elem.tabIndex}  
-							ref={elem.id}
-							data-visable = {elem.visable} 
-							data-id={elem.id}
-						>
-						<span 
-							className={elem.focus ? 'focus' : ''} 
-							id={'span'+elem.id} 
-							data-id={elem.id}
-						>
-							{elem.name}
-						</span>
-						{/* groups go here */}
-					{/*<ul role="group">
-						elem.groups.map( (group, i)=>{
-						console.log(group)
-						return 
-							<GroupItem
-								node={this.state.nodes[group]}
-								ref={this.state.nodes[group].id}
-							/>
-						})
-					
-
-					</ul>
-					*/}
-					{
-						<ul role="group">
-							<GroupItem
-								node={this.state.nodes[1]}
-								ref={this.state.nodes[1].id}
-							/>
-
-							<GroupItem
-								node={this.state.nodes[2]}
-								ref={this.state.nodes[2].id}
-							/>
-
-							<Group 						
-								node={this.state.nodes[3]}
-								ref={this.state.nodes[3].id}
-								nodes={this.state.nodes}
-								/>
-
-							<GroupItem
-								node={this.state.nodes[7]}
-								ref={this.state.nodes[7].id}
-							/>
-
-							<Group 						
-								node={this.state.nodes[8]}
-								ref={this.state.nodes[8].id}
-								nodes={this.state.nodes}
-								/>
-
-						</ul>						
-
-					}
-						</li>
-				})}
-			</ul>
-				{/*
-			  	<li role="treeitem"
-					key={this.state.nodes[0].id}
-				  aria-expanded={this.state.nodes[0].expanded} 
-					tabIndex={this.state.nodes[0].tabIndex}  
-					ref={this.state.nodes[0].id}
-					data-visable = {this.state.nodes[0].visable} 
-					data-id={this.state.nodes[0].id}
+				<h2 id="tree_label">
+					Tree View
+				</h2>
+				<ul role="tree" aria-labelledby="tree_label"
+					onClick={(e) => this.onClickEvent(e)}
+					onFocus={ (e) => this.onFocusEvent(e) }
+					onBlur={ (e) => this.onBlurEvent(e) }
+					onKeyDown={(e) => this.onKeyPressedEvent(e)}
 				>
-					<span 
-						className={this.state.nodes[0].focus ? 'focus' : ''} 
-						id={'span'+this.state.nodes[0].id} 
-						data-id={this.state.nodes[0].id}
-					>
-						{this.state.nodes[0].name}
-					</span>
-				*/}
-				{/* this group is controlled by root if nod has groups start new group item *
-				<ul role="group">
-					<GroupItem
-						node={this.state.nodes[1]}
-						ref={this.state.nodes[1].id}
-					/>
-
-					<GroupItem
-						node={this.state.nodes[2]}
-						ref={this.state.nodes[2].id}
-					/>
-
-					<Group 						
-						node={this.state.nodes[3]}
-						ref={this.state.nodes[3].id}
-						nodes={this.state.nodes}
-						/>
-
-					<GroupItem
-						node={this.state.nodes[7]}
-						ref={this.state.nodes[7].id}
-					/>
-
-					<Group 						
-						node={this.state.nodes[8]}
-						ref={this.state.nodes[8].id}
-						nodes={this.state.nodes}
-						/>
-
+					{/* start render root elements */}
+					{ 
+						roots.map( (elem, i)=>{
+							return this.renderRoots(elem)
+						})}
 				</ul>
-			  </li>
-
-			<li role="treeitem" 
-				aria-expanded={this.state.nodes[11].expanded} 
-				tabIndex={this.state.nodes[11].tabIndex}  
-				ref={this.state.nodes[11].id}
-				data-visable = {this.state.nodes[11].visable} 
-				data-id={this.state.nodes[11].id}
-			>
-				<span
-					className={this.state.nodes[11].focus ? 'focus' : ''} 
-					id={'span'+this.state.nodes[11].id} 
-					data-id={this.state.nodes[11].id}			
-				>
-
-				{this.state.nodes[11].name}
-				</span>
-
-				<ul role="group">
-					<Group 						
-						node={this.state.nodes[12]}
-						ref={this.state.nodes[12].id}
-						nodes={this.state.nodes}
-						/>
-				</ul>
-			</li>
-				
-			</ul>{/* end of main list */}
 		  </div>
 
 		);
 	}
-}
 
-class Group extends React.Component {
-	
-  render() {
-    return (
-			<li role="treeitem" 
-			aria-expanded={this.props.node.expanded} 
-			tabIndex={this.props.node.tabIndex}  
-			ref={(node) => { this.ref = node; }}
-			data-visable = {this.props.node.visable} 
-			data-id={this.props.node.id}
-		>
-			<span
-				className={this.props.node.focus ? 'focus' : ''} 
-				id={'span'+this.props.node.id} 
-				data-id={this.props.node.id}			
-			>
-				{this.props.node.name}
-			</span>
-			<ul>
-				{this.props.node.groups.map((id) => 
-					<GroupItem
-						node={this.props.nodes[id]}
-						ref={this.props.nodes[id].id}
-						key={this.props.nodes[id].id}
-					/>
-				)}
-				
-				</ul>
-		</li>
-    );
-  }
-}
-
-class GroupItem extends React.Component {
-  render() {
-    return (
-			<li role="treeitem" 
-			tabIndex={this.props.node.tabIndex}
-			className={this.props.node.focus ? 'focus doc' : 'doc' } 
-			data-visable = {this.props.node.visable} 
-			data-id={this.props.node.id}
-			ref={(node) => { this.ref = node; }}
-		>
-			{this.props.node.name}
-		</li>
-    );
-  }
-}
-
-
-/* old arrow down
-//if the element is a expanded list move to next child elemnt in sub list
-if (this.state.nodes[this.state.tid].expanded == true){
-	console.log('expanded folder moving to next element');
-	if (nodes.length > this.state.tid+1){
-		this.state.tid += 1;
-	}else{
-		//loop back to begining node
-		console.log("end of nodes looping to top");
-		this.state.tid = 0
-	}
-//else if the element is a child of a expanded folder
-}else if( !('expanded'  in this.state.nodes[this.state.tid]) ){
-	console.log('file found moving to next element')
-	//else its not expanded find next visible node
-	if (nodes.length > this.state.tid+1){
-		this.state.tid += 1;
-	}else{
-		//loop back to begining node
-		console.log("end of nodes looping to top");
-		this.state.tid = 0
-	}
-//the element is a collapsed folder move to the next visable element
-}else if(this.state.nodes[this.state.tid].expanded == false){
-	console.log('collapsed folder find next file')
-	var val = this.state.nodes[this.state.tid]			
-	function sortNumber(a,b) {
-		return a - b;
-	}
-
-	if ('groups' in val){
-		//sort the children in case they arent sorted
-		var groups = val.groups.sort(sortNumber);
-		//return the last element in the array
-		var myTID = groups[groups.length-1];
-		console.log( myTID )
-		console.log(myTID);
-		if (nodes.length > myTID+1){
-			console.log(this.state.nodes[myTID]);
-			//the last node is a group but it is not visable find its last child node
-			if ('groups'  in this.state.nodes[myTID]){
-				var val2 = this.state.nodes[myTID];
-				var groups2 = val2.groups.sort(sortNumber);
-				myTID = groups2[groups2.length-1];
-
-				if (nodes.length > myTID+1){
-					console.log('setting tid to '+(myTID + 1))
-					this.state.tid =  myTID + 1;
-				}else{
-					//loop back to begining node
-					console.log("end of nodes looping to top");
-					this.state.tid = 0
-				}								
-			}else{
-				//it is a list element file move to it
-				console.log('found available file list elemet')
-				this.state.tid = myTID + 1;;
-			}	
-		}else{
-			//loop back to begining node
-			console.log("end of nodes looping to top");
-			this.state.tid = 0
-		}	
-	}else{
-		console.log('ERROR in :');
-		console.log(val);
-	}					
-	console.log(val);
-	
-
-
-}else{
-	console.log('ERROR no element found')
-}
-*/
-
-//old
-				//if it has a child node set visible to false
-				/*
-				if (this.state.nodes[element].groups){
-					console.log("setting id " + this.state.nodes[element].id + " children to unsearchable");
-					this.state.nodes[element].groups.forEach(el => {
-						this.state.nodes[el].visable = false;
-					})
-				}		
-					/* This is not required
-					}else if( this.state.nodes[element].groups && (this.state.nodes[element].expanded == false) ){
-						console.log("setting id " + this.state.nodes[element].id + " children to unsearchable");
-						this.state.nodes[element].groups.forEach(el => {
-							console.log(this.state.nodes[el].visable +" should not = false")
-							this.state.nodes[el].visable = false;
-						})		
-				*/	
-
-/*
-				<li role="treeitem" 
-						aria-expanded={this.state.nodes[12].expanded} 
-						tabIndex={this.state.nodes[12].tabIndex}  
-						ref={this.state.nodes[12].id}
-						data-visable = {this.state.nodes[12].visable} 
-						data-id={this.state.nodes[12].id}
+	renderRoots(elem){
+		return(
+				<li role="treeitem"
+					key={elem.id}
+					aria-expanded={elem.expanded} 
+					tabIndex={elem.tabIndex}  
+					ref={elem.id}
+					data-visable = {elem.visable} 
+					data-id={elem.id}
 				>
-					<span
-						className={this.state.nodes[12].focus ? 'focus' : ''} 
-						id={'span'+this.state.nodes[12].id} 
-						data-id={this.state.nodes[12].id}
+					<span 
+						className={elem.focus ? 'focus' : ''} 
+						id={'span'+elem.id} 
+						data-id={elem.id}
 					>
-						{this.state.nodes[12].name}
+						{elem.name}
 					</span>
-					
-					<ul>
-					<GroupItem
-						node={this.state.nodes[13]}
-						ref={this.state.nodes[13].id}
-					/>
+					{/* this assumes all root nodes will have at least on group */}
+					<ul role="group">
+						{						
+							elem.groups.map( (group, i)=>
+								this.renderItem(group)
+							)
+						}
 					</ul>
-
 				</li>
-				*/
+				)
+	}
 
+	//test to see what element to render ( li with ul ) or li
+	renderItem(elem){
+		if ('groups' in this.state.nodes[elem]){
+			return(//GROUP
+				this.renderGroup(elem)
+			)
+		}else{//GROUPITEM
+			return(
+				this.renderGroupItem(elem)
+			)
+		}
+	}		
 
-/*
-const Group = React.forwardRef((props, ref)=>(
-	<li role="treeitem" 
-		aria-expanded={props.node.expanded} 
-		tabIndex={props.node.tabIndex}  
-		ref={ref}
-		data-visable = {props.node.visable} 
-		data-id={props.node.id}
-	>
-		<span
-			className={props.node.focus ? 'focus' : ''} 
-			id={'span'+props.node.id} 
-			data-id={props.node.id}			
-		>
-			{props.node.name}
-		</span>
-		<ul>
-			<GroupItem
-				node={props.nodes[13]}
-				ref={ref}
-			/>
-			</ul>
-	</li>
-));
+	// render list item
+	renderGroupItem(elem){
+		return (
+			<li role="treeitem" 
+				tabIndex={this.state.nodes[elem].tabIndex}
+				className={this.state.nodes[elem].focus ? 'focus doc' : 'doc' } 
+				data-visable = {this.state.nodes[elem].visable} 
+				data-id={this.state.nodes[elem].id}
+				ref={this.state.nodes[elem].id}
+				key={this.state.nodes[elem].id}
+			>
+				{this.state.nodes[elem].name}
+			</li>
+		)
+	}
 
-
-const GroupItem = React.forwardRef((props, ref)=>(
-	<li role="treeitem" 
-		tabIndex={props.node.tabIndex}
-		className={props.node.focus ? 'focus doc' : 'doc' } 
-		data-visable = {props.node.visable} 
-		data-id={props.node.id}
-		ref={ref}
-	>
-		{props.node.name}
-	</li>
-));
-*/				
+	// render the liste element and its ul
+	//does not support sub group rendering
+	renderGroup(elem){
+		return (
+			<li role="treeitem" 
+				aria-expanded={this.state.nodes[elem].expanded} 
+				tabIndex={this.state.nodes[elem].tabIndex}  
+				ref={this.state.nodes[elem].id}
+				data-visable = {this.state.nodes[elem].visable} 
+				data-id={this.state.nodes[elem].id}
+				key={this.state.nodes[elem].id}
+			>
+				<span
+					className={this.state.nodes[elem].focus ? 'focus' : ''} 
+					id={'span'+this.state.nodes[elem].id} 
+					data-id={this.state.nodes[elem].id}			
+				>
+					{this.state.nodes[elem].name}
+				</span>
+				<ul>
+					{this.state.nodes[elem].groups.map((id) => 
+						this.renderGroupItem(id)
+					)}	
+				</ul>
+			</li>
+		)
+	}
+}
