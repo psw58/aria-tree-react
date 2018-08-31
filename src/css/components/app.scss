@@ -100,3 +100,7 @@ ul[role="tree"] {
 [role="treeitem"] span:hover {
     background-color: #DDDDDD;
 }
+
+img{
+    pointer-events: none;
+}
