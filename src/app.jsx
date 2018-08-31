@@ -26,10 +26,8 @@ var nodes = [
 console.log(JSON.stringify(nodes));
 */
 
-service.findAll( )
+service.findAll()
     .then(empData => {
-        //this.buildEventsList( empData );
-        console.log(empData);
         ReactDOM.render(
           <TreeView nodes={empData} />,
             document.getElementById('root')  

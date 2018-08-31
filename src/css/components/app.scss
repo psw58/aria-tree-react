@@ -1,6 +1,6 @@
 .container{
     padding-top: 10%;
-    max-width: 500px;
+    max-width: 400px;
     margin: auto;
 }
 
@@ -61,25 +61,51 @@ ul[role="tree"] {
 }
 
 [role="treeitem"].doc:before {
-    content: url(https://www.w3.org/TR/wai-aria-practices-1.1/examples/treeview/treeview-1/images/file.png);
+    /*content: url(https://www.w3.org/TR/wai-aria-practices-1.1/examples/treeview/treeview-1/images/file.png);*/
+    content: url(http://localhost:8080/css/img/Right_advance_arrow_down25.png);
+    margin-right: .3em;
 }
 
 [role="treeitem"][aria-expanded="false"] > ul {
     display: none;
   }
   
-  [role="treeitem"][aria-expanded="true"] > ul {
-    display: block;
-  }
-  
+[role="treeitem"][aria-expanded="true"] > ul {
+display: block;
+}
 
-[role="treeitem"][aria-expanded="false"] > span:before {
-    content: url(https://www.w3.org/TR/wai-aria-practices-1.1/examples/treeview/treeview-1/images/closed.png);
+[role="treeitem"][aria-expanded="false"] > span:after {
+    border-style: solid;
+    border-width: 0.25em 0.25em 0 0;
+    content: '';
+    display: inline-block;
+    height: 0.45em;
+    left: 0.45em;
+    position: relative;
+    top: 1.00em;
+    transform: rotate(45deg);
+    vertical-align: top;
+    width: 0.45em;
+}
+
+[role="treeitem"][aria-expanded="true"] > span:after {
+    border-style: solid;
+    border-width: 0.25em 0.25em 0 0;
+    content: '';
+    display: inline-block;
+    height: 0.45em;
+    left: 0.6em;
+    position: relative;
+    top: 1.25em;
+    transform: rotate(135deg);
+    vertical-align: top;
+    width: 0.45em;
+
 }
 
 [role="treeitem"],
 [role="treeitem"] span {
-    width: 9em;
+    /*width: 9.6em;*/
     margin: 0;
     padding: 0;
     border: 2px transparent solid;
@@ -94,13 +120,18 @@ ul[role="tree"] {
 [role="treeitem"].focus,
 [role="treeitem"] span.focus {
   border-color: black;
-  background-color: #EEEEEE;
+  background-color: #DDD;
+}
+
+[role="treeitem"] span{
+    background-color: #EEE;
 }
 
 [role="treeitem"] span:hover {
-    background-color: #DDDDDD;
+    background-color: #CCC;
 }
 
 img{
     pointer-events: none;
+    margin-right: .5em;
 }
