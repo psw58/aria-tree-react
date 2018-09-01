@@ -25,7 +25,7 @@ export class TreeView extends Component {
 		if ( event.target.dataset.id ){
 			this.state.tid = parseInt(event.target.dataset.id);
 		}else{
-			console.log('error no data id')
+			console.log('error no data id on event, you must tab into tree view')
 		}
 		//clicked a childs span element not a node
 		if (event.target.id == "span"+this.state.tid){
@@ -45,7 +45,7 @@ export class TreeView extends Component {
 					this.state.nodes[element].visable = true;
 					//if the node is expanded set the children to visible
 					if (this.state.nodes[element].groups && this.state.nodes[element].expanded){
-						console.log("setting id " + this.state.nodes[element].id + " children to searchable");
+						//console.log("setting id " + this.state.nodes[element].id + " children to searchable");
 						this.state.nodes[element].groups.forEach(el => {
 							this.state.nodes[el].visable = true;
 						})
@@ -55,7 +55,7 @@ export class TreeView extends Component {
 					this.state.nodes[element].visable = false;
 					//set child nodes to hiden
 					if (this.state.nodes[element].groups && this.state.nodes[element].expanded){
-						console.log("setting id " + this.state.nodes[element].id + " children to searchable");
+						//console.log("setting id " + this.state.nodes[element].id + " children to searchable");
 						this.state.nodes[element].groups.forEach(el => {
 							this.state.nodes[el].visable = false;
 						})
@@ -69,7 +69,6 @@ export class TreeView extends Component {
 
 
 	moveFocus(curID, nextID){
-		console.log('move focus');
 		//remove focus from old element 
 		this.state.nodes[curID].focus = false;
 		this.state.nodes[curID].tabIndex = -1;
@@ -316,12 +315,12 @@ export class TreeView extends Component {
 
 		return (
 			<div>
-				<h2 id="tree_label">
-					Org Chart 
+				<h2 id="tree_label" aria-label='Org Chart press the tab key to enter the tree view'>
+					<span id='treeLabel'>Org Chart</span>
 				</h2>
-				<span className='visually-hidden'>press the tab key to enter the org chart</span>
+				
 				<ul role="tree" 
-					aria-labelledby="tree_label"
+					aria-labelledby='treeLabel'
 					aria-describedby="kbd_desc"
 					onClick={(e) => this.onClickEvent(e)}
 					onFocus={ (e) => this.onFocusEvent(e) }
@@ -334,8 +333,7 @@ export class TreeView extends Component {
 							return this.renderRoots(elem, i+1, roots.length)
 						})}
 				</ul>
-		  </div>
-
+			</div>
 		);
 	}
 
