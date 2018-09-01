@@ -305,7 +305,7 @@ export class TreeView extends Component {
 		return (
 			<div>
 				<h2 id="tree_label">
-					Tree View
+					Org Chart
 				</h2>
 				<ul role="tree" aria-labelledby="tree_label"
 					onClick={(e) => this.onClickEvent(e)}
