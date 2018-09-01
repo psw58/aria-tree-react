@@ -340,7 +340,11 @@ export class TreeView extends Component {
 						data-id={elem.id}
 					>
 						<img src={"css/img/"+elem.pic} alt="" height="50" width="50"></img>
-						{elem.name}
+						<span className='wrapper'>
+						<span className='inline title'>{elem.title}</span>
+						<span className='inline title'>{elem.name}</span>
+						</span>
+						{elem.expanded ? <i className="fas fa-chevron-down root" aria-hidden='true'></i> : <i className="fas fa-chevron-right root" aria-hidden='true'></i>}
 					</span>
 					{/* this assumes all root nodes will have at least on group */}
 					<ul role="group">
@@ -379,7 +383,7 @@ export class TreeView extends Component {
 				key={this.state.nodes[elem].id}
 			>
 				<img src={"css/img/"+this.state.nodes[elem].pic} alt="" height="30" width="30"></img>
-				{this.state.nodes[elem].name}
+				{this.state.nodes[elem].name} - {this.state.nodes[elem].title}
 			</li>
 		)
 	}
@@ -402,7 +406,11 @@ export class TreeView extends Component {
 					data-id={this.state.nodes[elem].id}			
 				>
 					<img src={"css/img/"+this.state.nodes[elem].pic} alt="" height="40" width="40"></img>
-					{this.state.nodes[elem].name}
+					<span className='wrapper'>
+						<span className='inline title'>{this.state.nodes[elem].title}</span>
+						<span className='inline title'>{this.state.nodes[elem].name}</span>
+					</span>
+					{this.state.nodes[elem].expanded ? <i className="fas fa-chevron-down group" aria-hidden='true'></i> : <i className="fas fa-chevron-right group" aria-hidden='true'></i>}
 				</span>
 				<ul>
 					{this.state.nodes[elem].groups.map((id) => 
