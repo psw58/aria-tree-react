@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Aria Tree View with React</title>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/index.css" >
 </head>
-<body>
-    <div class='header'>
-        <h1>Example of aria-tree structure using React</h1>
-        <a href='https://www.w3.org/TR/wai-aria-practices-1.1/examples/treeview/treeview-1/treeview-1a.html'>https://www.w3.org/TR/wai-aria-practices-1.1/examples/treeview/treeview-1/treeview-1a.html</a>
-    </div>
-    <div class='container'>
-        <div id="root"></div>
-    </div>
-    <script src="/output/app.bundle.js"></script>
-</body>
+
+    <body>
+        <a href="#main" class="screen-reader-shortcut"> Skip to content</a>
+        <div class='header'>
+            <h1>Example of aria-tree structure using React</h1>
+            <a href='https://www.w3.org/TR/wai-aria-practices-1.1/examples/treeview/treeview-1/treeview-1a.html'>https://www.w3.org/TR/wai-aria-practices-1.1/examples/treeview/treeview-1/treeview-1a.html</a>
+        </div>
+        <main id='main' tabindex="-1">
+        <div class='container'>
+            <div id="root"></div>
+        </div>
+        <div id="instructions"></div>
+    </main>
+
+        <script src="/output/app.bundle.js"></script>
+    </body>
+
 </html>

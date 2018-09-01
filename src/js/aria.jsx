@@ -311,7 +311,7 @@ export class TreeView extends Component {
 					{/* start render root elements */}
 					{ 
 						roots.map( (elem, i)=>{
-							return this.renderRoots(elem)
+							return this.renderRoots(elem, i+1, roots.length)
 						})}
 				</ul>
 		  </div>
@@ -319,7 +319,7 @@ export class TreeView extends Component {
 		);
 	}
 
-	renderRoots(elem){
+	renderRoots(elem, pos, len){
 		return(
 				<li role="treeitem"
 					key={elem.id}
@@ -328,6 +328,9 @@ export class TreeView extends Component {
 					ref={elem.id}
 					data-visable = {elem.visable} 
 					data-id={elem.id}
+					aria-setsize={len}
+					aria-posinset={pos}
+					aria-level={elem.level}
 				>
 					<span 
 						className={elem.focus ? 'focus' : ''} 
@@ -345,7 +348,7 @@ export class TreeView extends Component {
 					<ul role="group">
 						{						
 							elem.groups.map( (group, i)=>
-								this.renderItem(group)
+								this.renderItem(group, i+1, elem.groups.length)
 							)
 						}
 					</ul>
@@ -354,20 +357,20 @@ export class TreeView extends Component {
 	}
 
 	//test to see what element to render ( li with ul ) or li
-	renderItem(elem){
+	renderItem(elem, pos, len){
 		if ('groups' in this.state.nodes[elem]){
 			return(//GROUP
-				this.renderGroup(elem)
+				this.renderGroup(elem, pos, len)
 			)
 		}else{//GROUPITEM
 			return(
-				this.renderGroupItem(elem)
+				this.renderGroupItem(elem,pos,len)
 			)
 		}
 	}		
 
 	// render list item
-	renderGroupItem(elem){
+	renderGroupItem(elem, pos, len){
 		return (
 			<li role="treeitem" 
 				tabIndex={this.state.nodes[elem].tabIndex}
@@ -376,6 +379,9 @@ export class TreeView extends Component {
 				data-id={this.state.nodes[elem].id}
 				ref={this.state.nodes[elem].id}
 				key={this.state.nodes[elem].id}
+				aria-setsize={len}
+				aria-posinset={pos}
+				aria-level={this.state.nodes[elem].level}				
 			>
 				<img src={"css/img/"+this.state.nodes[elem].pic} alt="" height="30" width="30"></img>
 				{this.state.nodes[elem].name} - {this.state.nodes[elem].title}
@@ -385,7 +391,7 @@ export class TreeView extends Component {
 
 	// render the liste element and its ul
 	//does not support sub group rendering
-	renderGroup(elem){
+	renderGroup(elem, pos, len){
 		return (
 			<li role="treeitem" 
 				aria-expanded={this.state.nodes[elem].expanded} 
@@ -394,6 +400,9 @@ export class TreeView extends Component {
 				data-visable = {this.state.nodes[elem].visable} 
 				data-id={this.state.nodes[elem].id}
 				key={this.state.nodes[elem].id}
+				aria-setsize={len}
+				aria-posinset={pos}
+				aria-level={this.state.nodes[elem].level}					
 			>
 				<span
 					className={this.state.nodes[elem].focus ? 'focus' : ''} 

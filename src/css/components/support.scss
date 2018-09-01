@@ -1,0 +1,15 @@
+.container2{
+    width: 80vw;
+    margin: auto;
+}
+
+/*! CSS Used from: https://www.w3.org/StyleSheets/TR/2016/base.css */
+ul{margin-left:0;padding-left:2em;}
+li{margin:0.25em 0 0.5em;padding:0;}
+.def{padding:.5em 1em;background:#DEF;margin:1.2em 0;border-left:0.5em solid #8CCBF2;}
+th,td{text-align:left;text-align:start;}
+table.def{width:100%;border-spacing:0;}
+table.def td,table.def th{padding:0.5em;vertical-align:baseline;border-bottom:1px solid #bbd7e9;}
+table.def > tbody > tr:last-child th,table.def > tbody > tr:last-child td{border-bottom:0;}
+table.def th{font-style:italic;font-weight:normal;padding-left:1em;width:3em;}
+table{word-wrap:normal;overflow-wrap:normal;hyphens:manual;}
