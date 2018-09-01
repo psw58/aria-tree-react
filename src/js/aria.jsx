@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//import KeyboardEventHandler from 'react-keyboard-event-handler';
 /*
 	FOCUS Management:
 	When a single-select tree receives focus:
@@ -79,10 +78,6 @@ export class TreeView extends Component {
 		this.state.nodes[nextID].tabIndex = 0;
 		this.setState({nodes: this.state.nodes});
 		this.refs[nextID].focus();
-	}
-
-	defineRefs(){
-		this.refs[13]
 	}
 
 	onFocusEvent(e){
@@ -260,7 +255,7 @@ export class TreeView extends Component {
 				//start search from current node
 				for (var i=this.state.tid+1; i<this.state.nodes.length; i++){
 					var elem = this.state.nodes[i];
-					if ( ('visable' in elem) && (elem.visable == true) && (e.key == elem.name[0]) ) {
+					if ( ('visable' in elem) && (elem.visable == true) && (e.key.toLowerCase() == elem.name[0].toLowerCase()) ) {
 						this.state.tid = i;
 						found = true;
 						break;
@@ -270,7 +265,7 @@ export class TreeView extends Component {
 				if (!found){
 					for (var i=0; i<this.state.tid+1; i++){
 						var elem = this.state.nodes[i];
-						if ( ('visable' in elem) && (elem.visable == true) && (e.key == elem.name[0]) ) {
+						if ( ('visable' in elem) && (elem.visable == true) && (e.key.toLowerCase() == elem.name[0].toLowerCase()) ) {
 							this.state.tid = i;
 							found = true;
 							break;
