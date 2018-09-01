@@ -104,185 +104,202 @@ export class TreeView extends Component {
 	}
 
 	onKeyPressedEvent(e){
-		switch(e.key) {
+		/* SPACE KEY: --------------------------------------------------
+			activates a node, i.e., performs its default action. 
+			For parent nodes, one possible default action is to open or close the node. 
+			In single-select trees where selection does not follow focus (see https://www.w3.org/TR/wai-aria-practices-1.1/#issue-container-generatedID-27), 
+			the default action is typically to select the focused node.
+		*/		
+		if (e.keyCode==32){
+			if ( 'expanded' in this.state.nodes[this.state.tid] ){
+				e.preventDefault();
+				this.state.nodes[this.state.tid].expanded = !this.state.nodes[this.state.tid].expanded;
+				this.setNodeVisibleState(this.state.tid)
+			}else{
+				//element can not expand ignore enter key
+				console.log('element can not expand');
+			}
+		}else{
+			switch(e.key) {
 
-			/* ENTER KEY: --------------------------------------------------
-				activates a node, i.e., performs its default action. 
-				For parent nodes, one possible default action is to open or close the node. 
-				In single-select trees where selection does not follow focus (see https://www.w3.org/TR/wai-aria-practices-1.1/#issue-container-generatedID-27), 
-				the default action is typically to select the focused node.
-			*/
-			case 'Enter':
-				if ( 'expanded' in this.state.nodes[this.state.tid] ){
-					this.state.nodes[this.state.tid].expanded = !this.state.nodes[this.state.tid].expanded;
-					this.setNodeVisibleState(this.state.tid)
-				}else{
-					//element can not expand ignore enter key
-					console.log('element can not expand');
-				}
-				break;
-
-			/* Down Arrow: ---------------------------------------------------
-				Moves focus to the next node that is focusable without opening or closing a node.
-			*/
-			case 'ArrowDown':
-				//save id to remove focus from last element
-				var oldID = this.state.tid;
-				if (this.state.nodes.length > this.state.tid+1){
-					//find closest visable item
-					for (var i=this.state.tid+1; i<this.state.nodes.length; i++){
-						var elem = this.state.nodes[i];
-						if ( ('visable' in elem) && (elem.visable == true)){
-							this.state.tid = i;
-							break;
-						}else if ( i == this.state.nodes.length-1){
-							//no loops are found
-							console.log('no visable element found return to root');
-							this.state.tid = 0
-						}else{
-							console.log('error no visable elem');
-						}	
-					}	
-				}else{
-					//your on last node loop back to begining node
-					console.log("beggining of nodes looping to root");
-					this.state.tid = 0
-				}
-				//set focus to this element		
-				this.moveFocus(oldID, this.state.tid);
-				break;
-
-			/* Up Arrow: --------------------------------------------------------
-				Moves focus to the previous node that is focusable without opening or closing a node.
-			*/
-			case 'ArrowUp':
-				//save id to remove focus from last element
-				var oldID = this.state.tid;
-				//update current target id
-				//@TOD0 UPDATE THE TARGET ONLY IF ITS VISABLE
-				if (this.state.tid > 0){
-					//find closest visable item to current node
-					this.state.tid = this.findVisableInReverse( this.state.tid-1 );
-				}else{
-					//loop back to begining node
-					console.log("beggining of nodes looping to botttom");
-					this.state.tid = this.findVisableInReverse( this.state.nodes.length-1 );				
-				}
-				this.moveFocus(oldID, this.state.tid);
-				break;
-
-			/* Right arrow: ------------------------------------------------------
-				When focus is on a closed node, opens the node; focus does not move.
-				When focus is on a open node, moves focus to the first child node.
-				When focus is on an end node, does nothing.	
-			*/				
-			case 'ArrowRight':	
-				//save id to remove focus from last element
-				var oldID = this.state.tid;
-				if ( !('expanded' in this.state.nodes[this.state.tid]) ){
-					//end node
-				}else if( this.state.nodes[this.state.tid].expanded == false){
-					//open the node
-					this.state.nodes[this.state.tid].expanded = true;
-					this.setNodeVisibleState(this.state.tid)
-				}else{
-					if ('groups' in this.state.nodes[this.state.tid]){
-						//move to first group
-						this.state.tid = this.state.nodes[this.state.tid].groups[0];
+				/* ENTER KEY: --------------------------------------------------
+					activates a node, i.e., performs its default action. 
+					For parent nodes, one possible default action is to open or close the node. 
+					In single-select trees where selection does not follow focus (see https://www.w3.org/TR/wai-aria-practices-1.1/#issue-container-generatedID-27), 
+					the default action is typically to select the focused node.
+				*/
+				case ('Enter'):
+					if ( 'expanded' in this.state.nodes[this.state.tid] ){
+						this.state.nodes[this.state.tid].expanded = !this.state.nodes[this.state.tid].expanded;
+						this.setNodeVisibleState(this.state.tid)
 					}else{
-						console.log('ERROR all expanded data nodes must have a group');
+						//element can not expand ignore enter key
+						console.log('element can not expand');
 					}
-				}
+					break;
 
-				this.moveFocus(oldID, this.state.tid);
-				break;
-
-			/* Left arrow: --------------------------------------------------------
-				When focus is on an open node, closes the node.
-				When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
-				When focus is on a root node that is also either an end node or a closed node, does nothing.
-			*/
-			case 'ArrowLeft':	
-				//save id to remove focus from last element
-				var oldID = this.state.tid;
-				if ( this.state.nodes[this.state.tid].parent === '' &&  this.state.nodes[this.state.tid].expanded == false){
-					console.log("root element")
-					// When focus is on a root node that is also either an end node or a closed node, does nothing.
-				}else if( this.state.nodes[this.state.tid].expanded == true){
-					console.log("expanded element closing")
-					// When focus is on an open node, closes the node.
-					this.state.nodes[this.state.tid].expanded = false;
-					this.setNodeVisibleState(this.state.tid)
-				}else {
-					// When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
-					console.log("move to parent element")
-					this.state.tid = this.state.nodes[this.state.tid].parent;
-					this.setNodeVisibleState(this.state.tid)
-				}
-				this.moveFocus(oldID, this.state.tid);			
-				break;	
-
-			/* Home: ----------------------------------------------------------------
-				Moves focus to the first node in the tree without opening or closing a node.
-			*/
-			case 'Home':
-				var oldID = this.state.tid;
-				this.state.tid = 0;
-				this.moveFocus(oldID, this.state.tid);
-				console.log('not implimented');
-				break;	
-
-			/* End: ---------------------------------------------------------------------
-				Moves focus to the last node in the tree that is focusable without opening a node.
-			*/
-			case 'End':	
-				console.log('not implimented');
-				var oldID = this.state.tid;
-				this.state.tid = this.findVisableInReverse( this.state.nodes.length-1 );
-				this.moveFocus(oldID, this.state.tid);
-				break;	
-
-			/* CHARACTER: -----------------------------------------------------------------
-				Type-ahead is recommended for all trees, especially for trees with more than 7 root nodes:
-				Type a character: 
-					focus moves to the next node with a name that starts with the typed character.
-				* multiple characters not supported
-				* (Optional): Expands all siblings that are at the same level as the current node.
-			*/		
-			case (e.key.match(/^[a-zA-Z]{1}$/) || {}).input:
-				var oldID = this.state.tid;
-				var found = false;
-				//start search from current node
-				for (var i=this.state.tid+1; i<this.state.nodes.length; i++){
-					var elem = this.state.nodes[i];
-					if ( ('visable' in elem) && (elem.visable == true) && (e.key.toLowerCase() == elem.name[0].toLowerCase()) ) {
-						this.state.tid = i;
-						found = true;
-						break;
+				/* Down Arrow: ---------------------------------------------------
+					Moves focus to the next node that is focusable without opening or closing a node.
+				*/
+				case 'ArrowDown':
+					//save id to remove focus from last element
+					var oldID = this.state.tid;
+					if (this.state.nodes.length > this.state.tid+1){
+						//find closest visable item
+						for (var i=this.state.tid+1; i<this.state.nodes.length; i++){
+							var elem = this.state.nodes[i];
+							if ( ('visable' in elem) && (elem.visable == true)){
+								this.state.tid = i;
+								break;
+							}else if ( i == this.state.nodes.length-1){
+								//no loops are found
+								console.log('no visable element found return to root');
+								this.state.tid = 0
+							}else{
+								console.log('error no visable elem');
+							}	
+						}	
+					}else{
+						//your on last node loop back to begining node
+						console.log("beggining of nodes looping to root");
+						this.state.tid = 0
 					}
-				}
-				//if not found search from beginning
-				if (!found){
-					for (var i=0; i<this.state.tid+1; i++){
+					//set focus to this element		
+					this.moveFocus(oldID, this.state.tid);
+					break;
+
+				/* Up Arrow: --------------------------------------------------------
+					Moves focus to the previous node that is focusable without opening or closing a node.
+				*/
+				case 'ArrowUp':
+					//save id to remove focus from last element
+					var oldID = this.state.tid;
+					//update current target id
+					//@TOD0 UPDATE THE TARGET ONLY IF ITS VISABLE
+					if (this.state.tid > 0){
+						//find closest visable item to current node
+						this.state.tid = this.findVisableInReverse( this.state.tid-1 );
+					}else{
+						//loop back to begining node
+						console.log("beggining of nodes looping to botttom");
+						this.state.tid = this.findVisableInReverse( this.state.nodes.length-1 );				
+					}
+					this.moveFocus(oldID, this.state.tid);
+					break;
+
+				/* Right arrow: ------------------------------------------------------
+					When focus is on a closed node, opens the node; focus does not move.
+					When focus is on a open node, moves focus to the first child node.
+					When focus is on an end node, does nothing.	
+				*/				
+				case 'ArrowRight':	
+					//save id to remove focus from last element
+					var oldID = this.state.tid;
+					if ( !('expanded' in this.state.nodes[this.state.tid]) ){
+						//end node
+					}else if( this.state.nodes[this.state.tid].expanded == false){
+						//open the node
+						this.state.nodes[this.state.tid].expanded = true;
+						this.setNodeVisibleState(this.state.tid)
+					}else{
+						if ('groups' in this.state.nodes[this.state.tid]){
+							//move to first group
+							this.state.tid = this.state.nodes[this.state.tid].groups[0];
+						}else{
+							console.log('ERROR all expanded data nodes must have a group');
+						}
+					}
+
+					this.moveFocus(oldID, this.state.tid);
+					break;
+
+				/* Left arrow: --------------------------------------------------------
+					When focus is on an open node, closes the node.
+					When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
+					When focus is on a root node that is also either an end node or a closed node, does nothing.
+				*/
+				case 'ArrowLeft':	
+					//save id to remove focus from last element
+					var oldID = this.state.tid;
+					if ( this.state.nodes[this.state.tid].parent === '' &&  this.state.nodes[this.state.tid].expanded == false){
+						console.log("root element")
+						// When focus is on a root node that is also either an end node or a closed node, does nothing.
+					}else if( this.state.nodes[this.state.tid].expanded == true){
+						console.log("expanded element closing")
+						// When focus is on an open node, closes the node.
+						this.state.nodes[this.state.tid].expanded = false;
+						this.setNodeVisibleState(this.state.tid)
+					}else {
+						// When focus is on a child node that is also either an end node or a closed node, moves focus to its parent node.
+						console.log("move to parent element")
+						this.state.tid = this.state.nodes[this.state.tid].parent;
+						this.setNodeVisibleState(this.state.tid)
+					}
+					this.moveFocus(oldID, this.state.tid);			
+					break;	
+
+				/* Home: ----------------------------------------------------------------
+					Moves focus to the first node in the tree without opening or closing a node.
+				*/
+				case 'Home':
+					var oldID = this.state.tid;
+					this.state.tid = 0;
+					this.moveFocus(oldID, this.state.tid);
+					console.log('not implimented');
+					break;	
+
+				/* End: ---------------------------------------------------------------------
+					Moves focus to the last node in the tree that is focusable without opening a node.
+				*/
+				case 'End':	
+					console.log('not implimented');
+					var oldID = this.state.tid;
+					this.state.tid = this.findVisableInReverse( this.state.nodes.length-1 );
+					this.moveFocus(oldID, this.state.tid);
+					break;	
+
+				/* CHARACTER: -----------------------------------------------------------------
+					Type-ahead is recommended for all trees, especially for trees with more than 7 root nodes:
+					Type a character: 
+						focus moves to the next node with a name that starts with the typed character.
+					* multiple characters not supported
+					* (Optional): Expands all siblings that are at the same level as the current node.
+				*/		
+				case (e.key.match(/^[a-zA-Z]{1}$/) || {}).input:
+					var oldID = this.state.tid;
+					var found = false;
+					//start search from current node
+					for (var i=this.state.tid+1; i<this.state.nodes.length; i++){
 						var elem = this.state.nodes[i];
 						if ( ('visable' in elem) && (elem.visable == true) && (e.key.toLowerCase() == elem.name[0].toLowerCase()) ) {
 							this.state.tid = i;
 							found = true;
 							break;
 						}
-					}					
-				}
-				if(!found){
-					console.log('no search results found for '+e.key)
-				}else{
-					this.moveFocus(oldID, this.state.tid);
-				}
-				break;	
+					}
+					//if not found search from beginning
+					if (!found){
+						for (var i=0; i<this.state.tid+1; i++){
+							var elem = this.state.nodes[i];
+							if ( ('visable' in elem) && (elem.visable == true) && (e.key.toLowerCase() == elem.name[0].toLowerCase()) ) {
+								this.state.tid = i;
+								found = true;
+								break;
+							}
+						}					
+					}
+					if(!found){
+						console.log('no search results found for '+e.key)
+					}else{
+						this.moveFocus(oldID, this.state.tid);
+					}
+					break;	
 
-			// DEFAULT: -------------------------------------------------------------------
-			default: 
-				console.log(e.key);
-		}		
+				// DEFAULT: -------------------------------------------------------------------
+				default: 
+					console.log(e.key);
+			}	
+		}	
 		this.setState({nodes: this.state.nodes});
 	}
 
@@ -300,9 +317,12 @@ export class TreeView extends Component {
 		return (
 			<div>
 				<h2 id="tree_label">
-					Org Chart
+					Org Chart 
 				</h2>
-				<ul role="tree" aria-labelledby="tree_label"
+				<span className='visually-hidden'>press the tab key to enter the org chart</span>
+				<ul role="tree" 
+					aria-labelledby="tree_label"
+					aria-describedby="kbd_desc"
 					onClick={(e) => this.onClickEvent(e)}
 					onFocus={ (e) => this.onFocusEvent(e) }
 					onBlur={ (e) => this.onBlurEvent(e) }

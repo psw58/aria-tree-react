@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 export function Keyboard() {  
     return(
-        <div className='container2'>
+        <div className='container2' >
             <h2 id={"kbd_label"}>Keyboard Support</h2>
-            <table className="def" aria-labelledby="kbd_label">
+            <table className="def" aria-labelledby={"kbd_label"} id="kbd_desc">
                 <thead>
                     <tr>
                         <th>Key</th>
@@ -17,11 +17,10 @@ export function Keyboard() {
                         <td>
                             <ul>
                                 <li>Performs the default action (e.g. onclick event) for the focused node.</li>
-                                <li>In this example, the default action is to update the&nbsp;<q>File or Folder Selected</q>textbox.</li>
                             </ul>
                         </td>
                     </tr>
-                    <tr>
+                    <tr>    
                         <th><kbd>Down arrow</kbd></th>
                         <td>
                             <ul>
