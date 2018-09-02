@@ -303,7 +303,6 @@ export class TreeView extends Component {
 	}
 
 	//only supports tree nodes max - three levels deep 
-	// @TODO traverse full node list 
 	render() {
 		//get all root nodes
 		var roots = this.state.nodes.filter((elem, i)=>{
@@ -366,7 +365,7 @@ export class TreeView extends Component {
 					<ul role="group">
 						{						
 							elem.groups.map( (group, i)=>
-								this.renderItem(group, i+1, elem.groups.length)
+								this.renderElement(group, i+1, elem.groups.length)
 							)
 						}
 					</ul>
@@ -375,36 +374,16 @@ export class TreeView extends Component {
 	}
 
 	//test to see what element to render ( li with ul ) or li
-	renderItem(elem, pos, len){
+	renderElement(elem, pos, len){
 		if ('groups' in this.state.nodes[elem]){
 			return(//GROUP
 				this.renderGroup(elem, pos, len)
 			)
 		}else{//GROUPITEM
 			return(
-				this.renderGroupItem(elem,pos,len)
+				this.renderItem(elem,pos,len)
 			)
 		}
-	}		
-
-	// render list item
-	renderGroupItem(elem, pos, len){
-		return (
-			<li role="treeitem" 
-				tabIndex={this.state.nodes[elem].tabIndex}
-				className={this.state.nodes[elem].focus ? 'focus doc' : 'doc' } 
-				data-visable = {this.state.nodes[elem].visable} 
-				data-id={this.state.nodes[elem].id}
-				ref={this.state.nodes[elem].id}
-				key={this.state.nodes[elem].id}
-				aria-setsize={len}
-				aria-posinset={pos}
-				aria-level={this.state.nodes[elem].level}				
-			>
-				<img src={"css/img/"+this.state.nodes[elem].pic} alt="" height="30" width="30"></img>
-				{this.state.nodes[elem].name} - {this.state.nodes[elem].title}
-			</li>
-		)
 	}
 
 	// render the liste element and its ul
@@ -436,10 +415,31 @@ export class TreeView extends Component {
 				</span>
 				<ul>
 					{this.state.nodes[elem].groups.map((id) => 
-						this.renderGroupItem(id)
+						this.renderItem(id)
 					)}	
 				</ul>
 			</li>
 		)
 	}
+
+	// render list item
+	renderItem(elem, pos, len){
+		return (
+			<li role="treeitem" 
+				tabIndex={this.state.nodes[elem].tabIndex}
+				className={this.state.nodes[elem].focus ? 'focus doc' : 'doc' } 
+				data-visable = {this.state.nodes[elem].visable} 
+				data-id={this.state.nodes[elem].id}
+				ref={this.state.nodes[elem].id}
+				key={this.state.nodes[elem].id}
+				aria-setsize={len}
+				aria-posinset={pos}
+				aria-level={this.state.nodes[elem].level}				
+			>
+				<img src={"css/img/"+this.state.nodes[elem].pic} alt="" height="30" width="30"></img>
+				{this.state.nodes[elem].name} - {this.state.nodes[elem].title}
+			</li>
+		)
+	}
+
 }
