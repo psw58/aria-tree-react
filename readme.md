@@ -3,7 +3,8 @@
 
 Example of aria-tree structure using React
 
-## How to run
+## How to run 
+Install Node and Yarn if you dont have them then:
 
 Install dependencies:
 
