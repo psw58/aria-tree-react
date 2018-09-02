@@ -4,8 +4,7 @@ author: "Philip Williammee"
 date: "Sept/02/18"
 output: 
   html_document:
-     css: ./src/css/components/suport.scss
-     self_contained: no
+     self_contained: yes
 
 ---
 # Aria-Tree_React - ORG CHART
