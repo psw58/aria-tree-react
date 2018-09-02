@@ -27,6 +27,12 @@ to build output files:
 
     yarn run webpack
     
+---
+
+<h2>Example of aria-tree structure using React</h2>
+<p>
+    This org chart follows <a href='https://www.w3.org/TR/wai-aria-practices-1.1/examples/treeview/treeview-1/treeview-1a.html'>aria best practices</a> for aria role of tree view
+</p>
     
  <a href="https://ibb.co/kZQUpe"><img src="https://preview.ibb.co/n7129e/org_chart.png" alt="org_chart" border="0"></a>
        <div className='container2' >
