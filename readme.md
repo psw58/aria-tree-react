@@ -4,21 +4,21 @@
 Example of aria-tree structure using React
 
 ## How to run 
-Install Node and Yarn if you dont have them then:
+Install Node and Yarn if you dont have them, then:
 
-Install dependencies:
+    Install dependencies:
 
-    yarn install
+        yarn install
 
-Run dev server:
+    Run dev server:
 
-    yarn run dev
+        yarn run dev
 
-Open your favorite browser and type in http://localhost:8080
+    Open your favorite browser and type in http://localhost:8080
 
-to build output files:
+    to build output files:
 
-    yarn run webpack
+        yarn run webpack
     
 ---
 
