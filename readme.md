@@ -1,12 +1,4 @@
----
-title: "Aria-Tree_React"
-author: "Philip Williammee"
-date: "Sept/02/18"
-output: 
-  html_document:
-     self_contained: yes
 
----
 # Aria-Tree_React - ORG CHART
 
 Example of aria-tree structure using React
