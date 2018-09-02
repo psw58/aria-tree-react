@@ -1,8 +1,6 @@
-# Example React App
+# Example ORG CHART
 
-Example project for the Medium Article [What are NPM, Yarn, Babel, and Webpack; and how to properly use them?](https://medium.com/@appristas/what-are-npm-yarn-babel-and-webpack-and-how-to-properly-use-them-d835a758f987)
-
-https://github.com/appristas/example-react-project
+Example of aria-tree structure using React
 
 ## How to run
 
@@ -19,3 +17,6 @@ Open your favorite browser and type in http://localhost:8080
 to build output files:
 
     yarn run webpack
+    
+    
+ <a href="https://ibb.co/kZQUpe"><img src="https://preview.ibb.co/n7129e/org_chart.png" alt="org_chart" border="0"></a>
