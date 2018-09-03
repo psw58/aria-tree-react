@@ -16,14 +16,7 @@ service.findAll()
         ReactDOM.render(
           <Keyboard />,
           document.getElementById('instructions')   
-          
+
         )            
     })
     .catch(error => console.log(error));
-
-
-
-
-
-
-
